@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-white;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .container-center {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+
+  html {
+    overflow-y: scroll; /* Always show vertical scrollbar */
+  }
+}

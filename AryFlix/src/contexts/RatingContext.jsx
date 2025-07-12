@@ -1,0 +1,134 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
+
+// Create the rating context
+const RatingContext = createContext();
+
+// Custom hook to use rating context
+export const useRating = () => {
+  const context = useContext(RatingContext);
+  if (!context) {
+    throw new Error('useRating must be used within a RatingProvider');
+  }
+  return context;
+};
+
+// Rating Provider component
+export const RatingProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Get current user
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setLoading(false);
+    };
+    getCurrentUser();
+  }, []);
+
+  // Get user's rating for a specific movie/TV show
+  const getUserRating = async (mediaId) => {
+    if (!user) return null;
+    
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        console.error('No access token found');
+        return null;
+      }
+
+      const response = await fetch(`http://localhost:5000/api/ratings/${mediaId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const data = await response.json();
+      console.log('Get rating response:', data);
+      return data.success ? data.data : null;
+    } catch (error) {
+      console.error('Error getting user rating:', error);
+      return null;
+    }
+  };
+
+  // Submit or update a rating
+  const submitRating = async (mediaId, mediaType, rating) => {
+    console.log('🎯 Starting submitRating:', { mediaId, mediaType, rating, user: user?.id });
+    
+    if (!user) {
+      console.error('No user found');
+      return false;
+    }
+    
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        console.error('No access token found');
+        return false;
+      }
+
+      console.log('🔑 Token found, making API call...');
+      
+      const response = await fetch('http://localhost:5000/api/ratings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          media_id: mediaId,
+          media_type: mediaType,
+          rating: rating
+        })
+      });
+      
+      console.log('📡 API Response status:', response.status);
+      
+      const data = await response.json();
+      console.log('📡 API Response data:', data);
+      
+      if (!response.ok) {
+        console.error('API Error:', data);
+        return false;
+      }
+      
+      return data.success;
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+      return false;
+    }
+  };
+
+  // Get average rating for a movie/TV show
+  const getAverageRating = async (mediaId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/ratings/${mediaId}/average`);
+      const data = await response.json();
+      return data.success ? data.data : null;
+    } catch (error) {
+      console.error('Error getting average rating:', error);
+      return null;
+    }
+  };
+
+  const value = {
+    user,
+    loading,
+    getUserRating,
+    submitRating,
+    getAverageRating
+  };
+
+  return (
+    <RatingContext.Provider value={value}>
+      {children}
+    </RatingContext.Provider>
+  );
+};
