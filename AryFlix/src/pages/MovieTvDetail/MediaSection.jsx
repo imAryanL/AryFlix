@@ -411,8 +411,10 @@ const TrailerSection = () => {
                                         setIsRatingModalOpen(true);
                                     }}
                                 >
-                                    <span className="text-red-500 group-hover:scale-110 transition-transform">❤️</span>
-                                    <span className="text-sm">Rate this {isTV ? 'TV Show' : 'Movie'}</span>
+                                    <span className="text-red-500 group-hover:scale-110 transition-transform">
+                                        <img src="/star.png" alt="star" className="w-5 h-5" />
+                                    </span>
+                                    <span className="text-sm">Rate this {isTV ? 'show' : 'movie'}</span>
                                 </button>
 
                                 {/* Rating Modal */}
