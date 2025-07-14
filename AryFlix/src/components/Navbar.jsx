@@ -100,6 +100,21 @@ const Navbar = () => {
                 <span className="hidden sm:inline text-sm font-bold">Watchlist</span>
               </Link>
             )}
+
+            {/* Ratings - only show if user is logged in */}
+            {user && (
+              <Link 
+                to="/ratings" 
+                className="text-white flex items-center px-2.5 py-2.5 rounded hover:bg-gray-700"
+              >
+                <img
+                  src="/star.png"
+                  className="h-4 w-4 mr-1.5"
+                  alt="Ratings"
+                />
+                <span className="hidden sm:inline text-sm font-bold">Ratings</span>
+              </Link>
+            )}
             
             {/* Show different content based on login status */}
             {isLoading ? (
@@ -159,6 +174,20 @@ const Navbar = () => {
                         alt="Watchlist"
                       />
                       My Watchlist
+                    </Link>
+
+                    {/* Add Ratings link to dropdown */}
+                    <Link
+                      to="/ratings"
+                      onClick={() => setShowDropdown(false)}
+                      className="flex items-center px-4 py-3 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors font-bold"
+                    >
+                      <img
+                        src="/star.png"
+                        className="h-4 w-4 mr-3"
+                        alt="Ratings"
+                      />
+                      My Ratings
                     </Link>
                     
                     <button

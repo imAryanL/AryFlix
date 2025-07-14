@@ -5,6 +5,7 @@ import SearchResults from './pages/SearchResults/SearchResults';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Watchlist from './pages/Watchlist/Watchlist';
+import Ratings from './pages/Ratings/Ratings';  // Import new Ratings page
 import ErrorPage from './pages/ErrorPage/ErrorPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/watchlist" element={<Watchlist />} />
+                <Route path="/ratings" element={<Ratings />} />  {/* Add new ratings route */}
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </div>

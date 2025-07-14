@@ -118,12 +118,81 @@ export const RatingProvider = ({ children }) => {
     }
   };
 
+  // Get all ratings by the current user - NEW FUNCTION
+  const getAllUserRatings = async () => {
+    // If no user is logged in, return empty array
+    if (!user) return [];
+    
+    try {
+      // Get user's session token for authentication
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        console.error('No access token found');
+        return [];
+      }
+
+      // Call our new backend endpoint
+      const response = await fetch('http://localhost:5000/api/ratings/user/all', {
+        headers: {
+          'Authorization': `Bearer ${token}`  // Send token for authentication
+        }
+      });
+      
+      const data = await response.json();
+      console.log('Get all ratings response:', data);
+      
+      // Return the ratings array, or empty array if failed
+      return data.success ? data.data : [];
+    } catch (error) {
+      console.error('Error getting all user ratings:', error);
+      return [];
+    }
+  };
+
+  // Delete a user's rating for a specific movie/TV show - NEW FUNCTION
+  const deleteRating = async (mediaId) => {
+    // If no user is logged in, return false
+    if (!user) return false;
+    
+    try {
+      // Get user's session token for authentication
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      
+      if (!token) {
+        console.error('No access token found');
+        return false;
+      }
+
+      // Call our new DELETE endpoint
+      const response = await fetch(`http://localhost:5000/api/ratings/${mediaId}`, {
+        method: 'DELETE',                     // DELETE HTTP method
+        headers: {
+          'Authorization': `Bearer ${token}`  // Send token for authentication
+        }
+      });
+      
+      const data = await response.json();
+      console.log('Delete rating response:', data);
+      
+      // Return true if successful, false if failed
+      return data.success;
+    } catch (error) {
+      console.error('Error deleting rating:', error);
+      return false;
+    }
+  };
+
   const value = {
     user,
     loading,
     getUserRating,
     submitRating,
-    getAverageRating
+    getAverageRating,
+    getAllUserRatings,
+    deleteRating             // Add new delete function to context
   };
 
   return (

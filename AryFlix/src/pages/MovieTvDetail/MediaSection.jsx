@@ -13,7 +13,7 @@ const TrailerSection = () => {
     const { user, isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
     
     // Get rating functionality from context
-    const { user: ratingUser } = useRating();
+    const { user: ratingUser, getUserRating } = useRating();
     
     // Get poster from navigation state if available
     const homePagePoster = location.state?.posterUrl;
@@ -26,6 +26,7 @@ const TrailerSection = () => {
     const [error, setError] = useState(null);
     const [watchlistLoading, setWatchlistLoading] = useState(false);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+    const [userRating, setUserRating] = useState(null);
 
     // Check if current item is in watchlist
     const inWatchlist = isInWatchlist(id);
@@ -65,6 +66,24 @@ const TrailerSection = () => {
         }
     }, [id, isTV]);
 
+    // Fetch user's rating when component mounts or user changes
+    useEffect(() => {
+        const fetchUserRating = async () => {
+            if (user && id) {
+                try {
+                    const rating = await getUserRating(id);
+                    setUserRating(rating);
+                } catch (error) {
+                    console.error('Error fetching user rating:', error);
+                }
+            } else {
+                setUserRating(null);
+            }
+        };
+
+        fetchUserRating();
+    }, [user, id, getUserRating]);
+
     // ==========================================
     // WATCHLIST FUNCTIONALITY
     // ==========================================
@@ -90,6 +109,20 @@ const TrailerSection = () => {
             console.error('Error toggling watchlist:', error);
         } finally {
             setWatchlistLoading(false);
+        }
+    };
+
+    // Handle rating modal close and refresh user rating
+    const handleRatingModalClose = async () => {
+        setIsRatingModalOpen(false);
+        // Refresh user rating after modal closes (in case they rated)
+        if (user && id) {
+            try {
+                const rating = await getUserRating(id);
+                setUserRating(rating);
+            } catch (error) {
+                console.error('Error refreshing user rating:', error);
+            }
         }
     };
 
@@ -394,12 +427,12 @@ const TrailerSection = () => {
                                             className="w-5 h-5 group-hover:scale-110 transition-transform"
                                         />
                                     )}
-                                    <span className="text-sm">
+                                    <span className="text-sm font-bold">
                                         {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
                                     </span>
                                 </button>
 
-                                {/* Rate Button - Updated with modal functionality */}
+                                {/* Rate Button - Updated to show user's rating */}
                                 <button 
                                     className="w-full bg-[#393841] hover:bg-[#4a4a52] text-white 
                                     font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-3 transition-all duration-200 group cursor-pointer"
@@ -414,13 +447,15 @@ const TrailerSection = () => {
                                     <span className="text-red-500 group-hover:scale-110 transition-transform">
                                         <img src="/star.png" alt="star" className="w-5 h-5" />
                                     </span>
-                                    <span className="text-sm">Rate this {isTV ? 'show' : 'movie'}</span>
+                                    <span className="text-sm font-bold">
+                                        {userRating ? `Your rating: ${userRating.rating}/10` : `Rate this ${isTV ? 'show' : 'movie'}`}
+                                    </span>
                                 </button>
 
                                 {/* Rating Modal */}
                                 <RatingModal
                                     isOpen={isRatingModalOpen}
-                                    onClose={() => setIsRatingModalOpen(false)}
+                                    onClose={handleRatingModalClose}
                                     mediaId={id}
                                     mediaType={isTV ? 'tv' : 'movie'}
                                     mediaTitle={getTitle()}

@@ -597,6 +597,43 @@ app.post('/api/ratings', requireAuth, async (req, res) => {
     }
 });
 
+// Get all ratings by a user (protected route) - NEW ENDPOINT
+app.get('/api/ratings/user/all', requireAuth, async (req, res) => {
+    try {
+        // Log which user is requesting their ratings
+        console.log(`📋 Getting all ratings for user: ${req.user.id}`);
+        
+        // Get all ratings from database for this user
+        const { data, error } = await supabaseAdmin
+            .from('ratings')                              // From ratings table
+            .select('*')                                  // Get all columns
+            .eq('user_id', req.user.id)                   // Only this user's ratings
+            .order('updated_at', { ascending: false });   // Newest first
+        
+        // If database error, throw it
+        if (error) {
+            throw error;
+        }
+        
+        // Log how many ratings we found
+        console.log(`📋 Found ${data?.length || 0} ratings for user ${req.user.id}`);
+        
+        // Send back the ratings data
+        res.json({ 
+            success: true,                    // Request worked
+            data: data || [],                 // The ratings array
+            count: data?.length || 0          // How many ratings
+        });
+    } catch (error) {
+        // If something went wrong, send error response
+        console.error('Error getting user ratings:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Failed to get user ratings'
+        });
+    }
+});
+
 app.get('/api/ratings/:media_id/average', async (req, res) => {
     try {
         const { media_id } = req.params;
@@ -637,6 +674,44 @@ app.get('/api/ratings/:media_id/average', async (req, res) => {
         res.status(500).json({ 
             success: false, 
             error: 'Failed to get average rating' 
+        });
+    }
+});
+
+// Delete a user's rating for a specific movie/TV show (protected route) - NEW ENDPOINT
+app.delete('/api/ratings/:media_id', requireAuth, async (req, res) => {
+    try {
+        const { media_id } = req.params;
+        
+        // Log which user is deleting their rating
+        console.log(`🗑️ Deleting rating for media ${media_id} by user: ${req.user.id}`);
+        
+        // Use supabaseAdmin to bypass RLS and delete the rating
+        const { data, error } = await supabaseAdmin
+            .from('ratings')                              // From ratings table
+            .delete()                                     // Delete operation
+            .eq('user_id', req.user.id)                   // Only this user's rating
+            .eq('media_id', media_id);                    // For this specific media
+        
+        // If database error, throw it
+        if (error) {
+            throw error;
+        }
+        
+        // Log success
+        console.log(`🗑️ Successfully deleted rating for media ${media_id} by user ${req.user.id}`);
+        
+        // Send success response
+        res.json({ 
+            success: true, 
+            message: 'Rating deleted successfully!'
+        });
+    } catch (error) {
+        // If something went wrong, send error response
+        console.error('Error deleting rating:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Failed to delete rating' 
         });
     }
 });
