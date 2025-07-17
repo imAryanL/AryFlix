@@ -2,8 +2,12 @@
 import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { authFunctions } from '../../supabaseClient';
+import usePageTitle from '../../hooks/usePageTitle';
 
 function Signup() {
+  // Set page title
+  usePageTitle('Sign Up');
+  
   // Tool to redirect user to different pages
   const navigate = useNavigate();
   

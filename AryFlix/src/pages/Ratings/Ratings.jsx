@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useRating } from '../../contexts/RatingContext';
+import usePageTitle from '../../hooks/usePageTitle';
 
 function Ratings() {
   const navigate = useNavigate();
@@ -12,6 +13,9 @@ function Ratings() {
   
   // Get rating data from context
   const { user, getAllUserRatings, deleteRating } = useRating();  // Add deleteRating import
+
+  // Set page title
+  usePageTitle('Your Ratings');
 
   // Simple delay to prevent flash on page refresh
   useEffect(() => {

@@ -5,8 +5,11 @@ import ComingSoonTheatre from "./ComingSoonTheatre";
 import UpcomingShows from "./UpcoimingShows";
 import TrendingAnime from "./TrendingAnime";
 import StreamingPlatforms from "./StreamingPlatforms";
+import usePageTitle from "../../hooks/usePageTitle";
 
 function Home() {
+  usePageTitle("Home");
+
   return (
     <div>
       {/* Hero Section - Trending movies and TV shows carousel */}

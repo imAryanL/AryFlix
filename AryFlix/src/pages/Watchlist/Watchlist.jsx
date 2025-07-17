@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
 // Use watchlist context instead of making API calls
 import { useWatchlist } from '../../contexts/WatchlistContext';
+import usePageTitle from '../../hooks/usePageTitle';
 
 function Watchlist() {
   const navigate = useNavigate();
@@ -11,6 +12,9 @@ function Watchlist() {
   const [error, setError] = useState(null);
   const [initialLoad, setInitialLoad] = useState(true); // Add this new state
   
+  // Set page title
+  usePageTitle('Your Watchlist');
+
   // Get watchlist data from context
   const { watchlistItems, user, removeFromWatchlist } = useWatchlist();
 

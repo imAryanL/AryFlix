@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import MovieTVCard from '../../components/MovieTVCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import SearchBar from '../../components/SearchBar';
+import usePageTitle from '../../hooks/usePageTitle';
 
 function SearchResults() {
   const { query } = useParams(); // Get search query from URL
@@ -12,6 +13,9 @@ function SearchResults() {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Set dynamic title with search query
+  usePageTitle('Find');
 
   // Function to fetch search results from backend
   const fetchSearchResults = async (searchQuery) => {

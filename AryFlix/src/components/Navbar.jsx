@@ -72,10 +72,10 @@ const Navbar = () => {
             <Link to="/" className="flex items-center">
               <img 
                 src="/popcorn.png" 
-                className="h-8 w-8 mr-2" 
+                className="h-9 w-9 " 
                 alt="AryFlix Logo"
               />
-              <span className="text-white text-2xl font-[1000] whitespace-nowrap">AryFlix</span>
+              <span className="text-white text-3xl font-[1000] whitespace-nowrap mt-2">AryFlix</span>
             </Link>
           </div>
 
