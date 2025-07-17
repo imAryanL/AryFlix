@@ -6,7 +6,7 @@ import usePageTitle from '../../hooks/usePageTitle';
 
 function Signup() {
   // Set page title
-  usePageTitle('Sign Up');
+  usePageTitle('Signup');
   
   // Tool to redirect user to different pages
   const navigate = useNavigate();
@@ -101,13 +101,13 @@ function Signup() {
         
         {/* Header Section with Logo */}
         <div className="text-center">
-          <div className="flex justify-center items-center mb-6">
+          <div className="flex items-center justify-center mb-6">
             <img 
               src="/popcorn.png" 
-              className="h-12 w-12 mr-3" 
+              className="h-9 w-9 " 
               alt="AryFlix Logo"
             />
-            <span className="text-white text-4xl font-[1000]">AryFlix</span>
+            <span className="text-white text-3xl font-[1000] whitespace-nowrap mt-2">AryFlix</span>
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">
             Create your account
@@ -265,7 +265,7 @@ function Signup() {
           <p className="text-sm text-gray-400">
             Already have an account?{" "}
             <Link to="/login" className="text-[#E91E63] hover:text-[#F06292] font-semibold transition-colors">
-              Sign in here
+              Login here!
             </Link>
           </p>
         </div>

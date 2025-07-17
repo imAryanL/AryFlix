@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { authFunctions } from '../../supabaseClient';
+import usePageTitle from '../../hooks/usePageTitle';
 
 function Login() {
-   // Get any messages from other pages (like signup success)
+  // Set page title
+  usePageTitle('Login');
+  
+  // Get any messages from other pages (like signup success)
   const location = useLocation();
   const successMessage = location.state?.message;
   
@@ -67,10 +71,10 @@ function Login() {
           <div className="flex justify-center items-center mb-6">
             <img 
               src="/popcorn.png" 
-              className="h-12 w-12 mr-3" 
+              className="h-9 w-9" 
               alt="AryFlix Logo"
             />
-            <span className="text-white text-4xl font-[1000]">AryFlix</span>
+            <span className="text-white text-3xl font-[1000] whitespace-nowrap mt-2">AryFlix</span>
           </div>
           <h2 className="text-3xl font-bold text-white mb-2">
             Welcome back
