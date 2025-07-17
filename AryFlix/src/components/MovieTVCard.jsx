@@ -105,10 +105,11 @@ function MovieTVCard({
       {/* Poster Image - SMALLER HEIGHT to match proportions */}
       <div className="relative h-64 flex-shrink-0">
         <img 
-          src={posterUrl} 
+          src={posterUrl || '/movie_placeholder.png'} 
           alt={`${title} poster`}
           className="w-full h-full object-cover"
-          loading="lazy" // Improve performance with lazy loading
+          loading="lazy"
+          onError={(e) => { e.target.src = '/movie_placeholder.png'; }}
         />
         
         {/* Dark overlay on hover for visual feedback */}

@@ -74,10 +74,14 @@ const SearchBar = ({ isMobile = false }) => {
     event.preventDefault();
     const searchText = searchQuery.trim();
     if (searchText) {
-      // Clear the dropdown immediately when form is submitted
+      // IMMEDIATELY clear dropdown and suggestions
       setShowDropdown(false);
       setSuggestions([]);
       
+      // Clear any pending timeouts to prevent dropdown from reopening
+      clearTimeout(timeoutRef.current);
+      
+      // Navigate to search results
       navigate(`/search/${searchText}`);
       setSearchQuery("");
     }
@@ -103,6 +107,13 @@ const SearchBar = ({ isMobile = false }) => {
           placeholder={isMobile ? "Search..." : "Search movies and TV shows..."}
           value={searchQuery}
           onChange={handleInputChange}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setShowDropdown(false);
+              setSuggestions([]);
+              clearTimeout(timeoutRef.current);
+            }
+          }}
           className="w-full bg-[#303035] text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#F06292] placeholder-gray-400 text-sm placeholder:text-sm"
         />
         <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2">

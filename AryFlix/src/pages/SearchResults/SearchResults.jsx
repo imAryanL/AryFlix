@@ -155,7 +155,7 @@ function SearchResults() {
                 title={item.title || item.name}
                 year={item.release_date ? new Date(item.release_date).getFullYear() : 'N/A'}
                 rating={item.vote_average?.toFixed(1) || 'N/A'}
-                posterUrl={item.poster_path}
+                posterUrl={item.poster_path ? `https://image.tmdb.org/t/p/w780${item.poster_path}` : '/movie_placeholders.png'}
                 mediaType={item.media_type}
                 showBookmark={true}
               />
