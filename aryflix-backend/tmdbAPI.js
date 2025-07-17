@@ -1022,6 +1022,197 @@ const getWatchAtHomeContent = async () => {
     }
 };
 
+// Add this function to tmdbAPI.js 
+
+// Function to search for movies and TV shows
+const searchMoviesAndTV = async (query) => {
+    try {
+        console.log(`🔍 Searching for: "${query}"`);
+        
+        // Search both movies and TV shows simultaneously
+        const [moviesResponse, tvResponse] = await Promise.all([
+            tmdbApi.get('/search/movie', {
+                params: {
+                    query: query,
+                    include_adult: false,
+                    language: 'en-US',
+                    page: 1
+                }
+            }),
+            tmdbApi.get('/search/tv', {
+                params: {
+                    query: query,
+                    include_adult: false,
+                    language: 'en-US',
+                    page: 1
+                }
+            })
+        ]);
+
+        // Process movie results
+        const movies = moviesResponse.data.results.map(movie => ({
+            ...movie,
+            media_type: 'movie',
+            poster_path: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : null
+        }));
+
+        // Process TV show results
+        const tvShows = tvResponse.data.results.map(show => ({
+            ...show,
+            media_type: 'tv',
+            poster_path: show.poster_path ? `https://image.tmdb.org/t/p/w500${show.poster_path}` : null,
+            title: show.name, // TV shows use 'name' instead of 'title'
+            release_date: show.first_air_date // TV shows use 'first_air_date'
+        }));
+
+        // Combine results
+        const allResults = [...movies, ...tvShows];
+
+        // IMPROVED SORTING: Smart scoring that prioritizes popular content
+        allResults.sort((a, b) => {
+            // Calculate smart scores for both items
+            const scoreA = calculateSmartScore(a.title, query, a.popularity, a.vote_average, a.vote_count);
+            const scoreB = calculateSmartScore(b.title, query, b.popularity, b.vote_average, b.vote_count);
+            
+            return scoreB - scoreA; // Higher score = better result
+        });
+
+        console.log(`🔍 Found ${movies.length} movies and ${tvShows.length} TV shows`);
+        
+        return allResults.slice(0, 20); // Return top 20 results
+    } catch (error) {
+        console.error('Error searching movies and TV shows:', error.message);
+        throw new Error('Failed to search content');
+    }
+};
+
+// Helper function to calculate relevance score
+const calculateRelevanceScore = (title, query) => {
+    const titleLower = title.toLowerCase();
+    const queryLower = query.toLowerCase();
+    
+    // Exact match gets highest score
+    if (titleLower === queryLower) {
+        return 1000;
+    }
+    
+    // Title starts with query gets high score
+    if (titleLower.startsWith(queryLower)) {
+        return 800;
+    }
+    
+    // Query is at the beginning of a word in title
+    if (titleLower.includes(` ${queryLower}`)) {
+        return 600;
+    }
+    
+    // Title contains the full query
+    if (titleLower.includes(queryLower)) {
+        return 400;
+    }
+    
+    // Calculate word match score
+    const titleWords = titleLower.split(/\s+/);
+    const queryWords = queryLower.split(/\s+/);
+    let wordMatchScore = 0;
+    
+    queryWords.forEach(queryWord => {
+        titleWords.forEach(titleWord => {
+            if (titleWord === queryWord) {
+                wordMatchScore += 100; // Exact word match
+            } else if (titleWord.startsWith(queryWord) || queryWord.startsWith(titleWord)) {
+                wordMatchScore += 50; // Partial word match
+            }
+        });
+    });
+    
+    return wordMatchScore;
+};
+
+// Smart scoring function that balances relevance with popularity
+// This fixes the problem where irrelevant but perfectly matched titles (like 1990 Captain America) 
+// would rank higher than popular, well-known movies (like Civil War)
+const calculateSmartScore = (title, query, popularity, rating, voteCount) => {
+    const titleLower = title.toLowerCase();
+    const queryLower = query.toLowerCase();
+    
+    // ===== POPULARITY SCORING (MAIN FACTOR - ~70% of total score) =====
+    // This is the MOST IMPORTANT factor - ensures users see movies they've heard of
+    // We use Math.log() to prevent extremely popular movies from completely dominating
+    // Example: Movie with 1000 popularity gets ~345 points, movie with 100 gets ~230 points
+    let score = Math.log(popularity || 1) * 50; // Multiply by 50 to make it the dominant factor
+    
+    // ===== QUALITY BONUS (MEDIUM FACTOR - ~20% of total score) =====
+    // Movies that are both popular AND good get extra points
+    // This prevents popular but terrible movies from ranking too high
+    // Only movies with 100+ votes get this bonus (prevents fake ratings)
+    if (rating && voteCount > 100) {
+        score += (rating / 10) * 20; // 10/10 movie gets 20 extra points, 5/10 gets 10 points
+    }
+    
+    // ===== RELEVANCE SCORING (SMALLER FACTOR - ~10% of total score) =====
+    // This ensures the movie is actually related to what the user searched for
+    // But it can't overcome terrible popularity + quality scores
+    
+    // Basic relevance: Does the title contain the search term?
+    // Example: "Captain America: Civil War" contains "captain america" = +30 points
+    if (titleLower.includes(queryLower)) {
+        score += 30; // Good relevance bonus, but not overwhelming
+        
+        // EXACT MATCH BONUS: Perfect title match gets extra points
+        // Example: Searching "avatar" and finding exactly "Avatar" = +20 more points
+        if (titleLower === queryLower) {
+            score += 20; // Reward exact matches
+        }
+        
+        // STARTS WITH BONUS: Query at beginning of title gets extra points  
+        // Example: "Star Wars" matches "Star Wars: A New Hope" = +15 more points
+        if (titleLower.startsWith(queryLower)) {
+            score += 15; // Reward titles that start with the search term
+        }
+    }
+    
+    // ===== WORD MATCHING BONUS (TINY FACTOR - ~5% of total score) =====
+    // Count how many individual words from the search appear in the title
+    // This helps with partial matches like "iron man" matching "Iron Man 3"
+    const titleWords = titleLower.split(/\s+/);    // Split title into individual words
+    const queryWords = queryLower.split(/\s+/);    // Split search into individual words
+    let wordMatches = 0;
+    
+    // Check each search word against each title word
+    queryWords.forEach(queryWord => {
+        titleWords.forEach(titleWord => {
+            // If words contain each other (like "america" and "american"), count it
+            if (titleWord.includes(queryWord) || queryWord.includes(titleWord)) {
+                wordMatches++; // Count this as a word match
+            }
+        });
+    });
+    
+    score += wordMatches * 5; // Small bonus for each word match (5 points each)
+    
+    // ===== FINAL RESULT =====
+    // Higher score = better search result
+    // Popular + Good + Relevant movies will have the highest scores
+    // Unpopular movies (like 1990 Captain America) will have low scores regardless of relevance
+    return score;
+};
+
+// ===== EXAMPLE SCORES FOR "CAPTAIN AMERICA" SEARCH =====
+// Captain America: Civil War
+// - Popularity: Math.log(500) * 50 = ~310 points
+// - Quality: (7.4/10) * 20 = ~15 points  
+// - Relevance: Contains + starts with = 30 + 15 = 45 points
+// - Word matches: 2 words * 5 = 10 points
+// - TOTAL: ~380 points (WINNER!)
+
+// Captain America (1990)
+// - Popularity: Math.log(50) * 50 = ~195 points
+// - Quality: (4.5/10) * 20 = ~9 points
+// - Relevance: Exact match = 30 + 20 = 50 points  
+// - Word matches: 2 words * 5 = 10 points
+// - TOTAL: ~264 points (LOSER!)
+
 // These functions will be imported in server.js to create API endpoints
 module.exports = {
     getTrendingMovies,
@@ -1041,5 +1232,6 @@ module.exports = {
     getTVDetails,
     getMovieDetailsWithTrailer,
     getTVDetailsWithTrailer,
-    getWatchAtHomeContent
+    getWatchAtHomeContent,
+    searchMoviesAndTV
 };

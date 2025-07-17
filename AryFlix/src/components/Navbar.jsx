@@ -149,7 +149,7 @@ const Navbar = () => {
 
                 {/* Dropdown Menu */}
                 {showDropdown && (
-                  <div className="absolute right-0 mt-2 w-60 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-2 z-50">
+                  <div className="absolute right-0 mt-2 w-60 bg-[#303035] rounded-lg shadow-lg border border-gray-700 py-2 z-50">
                     {/* User Info Header */}
                     <div className="px-4 py-3 text-sm text-gray-300 border-b border-gray-700 flex items-center space-x-3">
                       <img 

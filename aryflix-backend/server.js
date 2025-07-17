@@ -11,7 +11,7 @@ const cors = require('cors');
 const { getTrendingMovies, getTrendingTVShows, getNowPlayingMovies, getPopularTVShows, getUpcomingMovies, 
     getUpcomingTVShows, getTrendingAnime, getNetflixContent, getPrimeVideoContent, getDisneyPlusContent, 
     getMaxContent, getAppleTVContent, getStreamingProviderLogos, getMovieDetails, getTVDetails,
-    getMovieDetailsWithTrailer, getTVDetailsWithTrailer, getWatchAtHomeContent } = require('./tmdbAPI');
+    getMovieDetailsWithTrailer, getTVDetailsWithTrailer, getWatchAtHomeContent, searchMoviesAndTV } = require('./tmdbAPI');
 
 // Import OMDb API functions for ratings
 const { getRatingsByImdbId, getRatingsByTitle } = require('./omdbApi');
@@ -757,6 +757,46 @@ app.post('/api/auth/check-username', async (req, res) => {
       error: 'Server error while checking username'
     });
   }
+});
+
+// Search for movies and TV shows
+// GET request to http://localhost:5000/api/search/:query
+app.get('/api/search/:query', async (req, res) => {
+    try {
+        const { query } = req.params;
+        
+        // Validate search query
+        if (!query || query.trim().length === 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Search query is required'
+            });
+        }
+
+        // Decode URL-encoded query (handles spaces and special characters)
+        const decodedQuery = decodeURIComponent(query.trim());
+        
+        console.log(`🔍 Search request for: "${decodedQuery}"`);
+        
+        // Call our search function
+        const results = await searchMoviesAndTV(decodedQuery);
+        
+        console.log(`🔍 Returning ${results.length} search results`);
+        
+        // Send search results back to client
+        res.json({
+            success: true,
+            data: results,
+            query: decodedQuery,
+            count: results.length
+        });
+    } catch (error) {
+        console.error('Error for search:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to search content'
+        });
+    }
 });
 
 // Start the server and listen for incoming requests on the specified port
