@@ -75,11 +75,11 @@ const ScrollableMovieSection = ({
       
       {/* Scrollable container with arrows */}
       <div className="relative">
-        {/* Left Arrow - CUSTOM PNG */}
+        {/* Left Arrow - HIDDEN ON MOBILE, visible on larger screens */}
         {showArrows && showLeftArrow && (
           <button
             onClick={scrollLeft}
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-[#C2185B] text-white p-3 rounded-full z-10 transition-all duration-200 cursor-pointer"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-[#C2185B] text-white p-3 rounded-full z-10 transition-all duration-200 cursor-pointer border-1 border-white hidden sm:flex"
             aria-label="Scroll left"
           >
             <img 
@@ -90,11 +90,11 @@ const ScrollableMovieSection = ({
           </button>
         )}
 
-        {/* Right Arrow - CUSTOM PNG */}
+        {/* Right Arrow - HIDDEN ON MOBILE, visible on larger screens */}
         {showArrows && showRightArrow && (
           <button
             onClick={scrollRight}
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-[#C2185B] text-white p-3 rounded-full z-10 transition-all duration-200 cursor-pointer"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-[#C2185B] text-white p-3 rounded-full z-10 transition-all duration-200 cursor-pointer border-1 border-white hidden sm:flex"
             aria-label="Scroll right"
           >
             <img 
@@ -105,14 +105,16 @@ const ScrollableMovieSection = ({
           </button>
         )}
 
-        {/* Scrollable Cards Container */}
+        {/* Scrollable Cards Container - TOUCH FRIENDLY */}
         <div 
           ref={scrollContainerRef}
-          className="flex gap-4 overflow-x-auto"
+          className="flex gap-4 overflow-x-auto scroll-smooth"
           style={{ 
             scrollbarWidth: 'none',
             msOverflowStyle: 'none',
-            WebkitScrollbar: 'none'
+            WebkitScrollbar: 'none',
+            // Better touch scrolling on mobile
+            WebkitOverflowScrolling: 'touch'
           }}
         >
           {children}

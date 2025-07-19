@@ -128,32 +128,60 @@ const OverView = () => {
         <div className="relative -mx-4 md:-mx-8">
             <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 -mt-5">
                 
-                {/* GENRES & KEYWORDS SECTION */}
-                <div className="lg:-ml-9">
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        {genresAndKeywords.map((item, index) => (
-                            <span
-                                key={index}
-                                className="bg-[#393841] hover:bg-[#4a4a52] text-white px-3 py-1 rounded-full border border-gray-200 text-sm font-medium cursor-pointer"
+                {/* MOBILE LAYOUT */}
+                <div className="block lg:hidden">
+                    {/* 5. GENRES & KEYWORDS (single row, horizontal scroll, hidden scrollbar) */}
+                    {genresAndKeywords.length > 0 && (
+                        <div className="mb-4">
+                            <div 
+                                className="flex gap-2 overflow-x-auto pb-2"
+                                style={{ 
+                                    scrollbarWidth: 'none',
+                                    msOverflowStyle: 'none',
+                                    WebkitScrollbar: 'none'
+                                }}
                             >
-                                {item.name}
-                            </span>
-                        ))}
-                    </div>
+                                {genresAndKeywords.map((item, index) => (
+                                    <span
+                                        key={index}
+                                        className="bg-[#393841] hover:bg-[#4a4a52] text-white px-3 py-1 rounded-full border border-gray-200 text-sm font-medium cursor-pointer whitespace-nowrap flex-shrink-0"
+                                    >
+                                        {item.name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                {/* DESCRIPTION/OVERVIEW SECTION */}
-                {formattedDescription && (
-                    <div className="lg:-ml-8">
-                        <div className="mb-2 max-w-4xl">
-                            <p className="text-gray-200 leading-relaxed text-base">
-                                {formattedDescription}
-                            </p>
+                {/* DESKTOP LAYOUT (keep existing) */}
+                <div className="hidden lg:block">
+                    {/* GENRES & KEYWORDS SECTION */}
+                    <div className="lg:-ml-9">
+                        <div className="flex flex-wrap gap-2 mb-4">
+                            {genresAndKeywords.map((item, index) => (
+                                <span
+                                    key={index}
+                                    className="bg-[#393841] hover:bg-[#4a4a52] text-white px-3 py-1 rounded-full border border-gray-200 text-sm font-medium cursor-pointer"
+                                >
+                                    {item.name}
+                                </span>
+                            ))}
                         </div>
-                        <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
                     </div>
-                )}
 
+                    {/* DESCRIPTION/OVERVIEW SECTION */}
+                    {formattedDescription && (
+                        <div className="lg:-ml-8">
+                            <div className="mb-2 max-w-4xl">
+                                <p className="text-gray-200 leading-relaxed text-base">
+                                    {formattedDescription}
+                                </p>
+                            </div>
+                            <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

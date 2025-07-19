@@ -347,124 +347,122 @@ const TrailerSection = () => {
             <div className="-mt-4 pb-8">
                 <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
                     
-                    {/* LEFT SIDE - POSTER AND VIDEO TOGETHER */}
-                    <div className="flex flex-col lg:flex-row lg:items-start lg:gap-1 lg:-ml-9">
-                        
-                        {/* POSTER */}
-                        <div className="flex justify-center lg:justify-start mb-8 lg:mb-0 flex-shrink-0">
-                            <div className="relative group cursor-pointer">
+                    {/* MOBILE LAYOUT */}
+                    <div className="block lg:hidden">
+                        {/* 3. VIDEO SECTION (full-width, edge-to-edge) */}
+                        {enhancedTrailer ? (
+                            <div className="mb-4 -mx-4">
+                                <div className="relative w-full aspect-video bg-black overflow-hidden shadow-lg">
+                                    <iframe
+                                        src={getYouTubeEmbedUrl(enhancedTrailer)}
+                                        title={trailerSourceInfo?.name || 'Trailer'}
+                                        className="w-full h-full"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        onError={() => {
+                                            console.log('🚫 Trailer failed to load - possibly geo-blocked');
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        ) : (
+                            /* No Trailer Available - Mobile version, also full-width */
+                            <div className="mb-4 -mx-4">
+                                <div className="w-full aspect-video flex items-center justify-center bg-gray-800">
+                                    <div className="text-center p-6">
+                                        <h3 className="text-white text-lg font-bold mb-2">No Trailer Available</h3>
+                                        <p className="text-gray-400 text-sm">
+                                            No trailer found for this {isTV ? 'TV show' : 'movie'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 4. POSTER (left) + SUMMARY (right) */}
+                        <div className="flex gap-3 mb-4">
+                            {/* Poster - Small and compact */}
+                            <div className="flex-shrink-0">
                                 <img 
                                     src={getPosterUrl()}
                                     alt={`${getTitle()} poster`}
-                                    className="w-70 h-auto rounded-lg shadow-2xl transform transition-transform duration-100 ease-out group-hover:scale-[1.02]"
-                                    loading="lazy"
+                                    className="w-24 h-36 rounded-lg object-cover shadow-lg"
                                 />
-                                
-                                {/* Simple hover overlay */}
-                                <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out rounded-lg"></div>
+                            </div>
+                            
+                            {/* Summary - Takes remaining space, with same limiting as OverView */}
+                            <div className="flex-1 min-w-0">
+                                {movieData?.overview ? (
+                                    <p className="text-gray-200 text-sm leading-relaxed">
+                                        {movieData.overview.length <= 250 
+                                            ? movieData.overview 
+                                            : (() => {
+                                                const shortened = movieData.overview.substring(0, 250);
+                                                const lastPeriod = shortened.lastIndexOf('.');
+                                                const lastSpace = shortened.lastIndexOf(' ');
+                                                
+                                                if (lastPeriod > 150) {
+                                                    return movieData.overview.substring(0, lastPeriod + 1);
+                                                }
+                                                if (lastSpace > 150) {
+                                                    return movieData.overview.substring(0, lastSpace) + '...';
+                                                }
+                                                return movieData.overview.substring(0, 200) + '...';
+                                            })()
+                                        }
+                                    </p>
+                                ) : (
+                                    <p className="text-gray-400 text-sm italic">No summary available</p>
+                                )}
                             </div>
                         </div>
 
-                        {/* VIDEO - ENHANCED WITH YOUTUBE FALLBACK */}
-                        <div className="flex-shrink-0">
-                            {enhancedTrailer ? (
-                                <div className="w-full mr-2">
-                                    {/* Video container with proper 16:9 aspect ratio */}
-                                    <div 
-                                        className="relative w-[746px] aspect-video bg-black rounded-lg overflow-hidden shadow-2xl select-none"
-                                        onMouseDown={(e) => e.preventDefault()}
-                                    >
-                                        <iframe
-                                            src={getYouTubeEmbedUrl(enhancedTrailer)}
-                                            title={trailerSourceInfo?.name || 'Trailer'}
-                                            className="w-full h-full select-none"
-                                            frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                            style={{
-                                                userSelect: 'none',
-                                                WebkitUserSelect: 'none',
-                                                
-                                                
-                                            }}
-                                            onError={() => {
-                                                console.log('🚫 Trailer failed to load - possibly geo-blocked');
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            ) : (
-                                /* No Trailer Available - Enhanced message */
-                                <div className="w-[745px] aspect-video flex items-center justify-center">
-                                    <div className="bg-gray-800 rounded-lg p-8 text-center">
-                                        <h3 className="text-white text-xl font-bold mb-4">No Trailer Available</h3>
-                                        <p className="text-gray-400 mb-2">
-                                            No trailer found on TMDB or YouTube for this {isTV ? 'TV show' : 'movie'}
-                                        </p>
-                                        <p className="text-gray-500 text-sm">
-                                            Our system searched both TMDB and YouTube databases
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
+                        {/* 5. INTERACTIVE BUTTONS & MOVIE STATS - ADD THIS NEW SECTION */}
+                        <div className="space-y-3 mb-4">
+                            {/* Watchlist Button */}
+                            <button 
+                                onClick={handleWatchlistToggle}
+                                disabled={watchlistLoading}
+                                className="w-full bg-[#393841] hover:bg-[#4a4a52] text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-all duration-200"
+                            >
+                                {watchlistLoading ? (
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                ) : (
+                                    <img 
+                                        src={inWatchlist ? "/bookmark_pink.png" : "/bookmark.png"} 
+                                        alt="Watchlist" 
+                                        className="w-5 h-5"
+                                    />
+                                )}
+                                <span className="text-sm font-bold">
+                                    {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
+                                </span>
+                            </button>
 
-                        {/* RIGHT SIDEBAR - WATCHLIST AND RATE SECTION */}
-                        <div className="flex-shrink-0 w-64 -ml-2">
-                            <div className="h-[420px] flex flex-col justify-between">
-                                {/* Watchlist Button - Enhanced with actual functionality */}
-                                <button 
-                                    onClick={handleWatchlistToggle}
-                                    disabled={watchlistLoading}
-                                    className="w-full bg-[#393841] hover:bg-[#4a4a52] text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-3 transition-all duration-200 group cursor-pointer"
-                                >
-                                    {watchlistLoading ? (
-                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                    ) : (
-                                        <img 
-                                            src={inWatchlist ? "/bookmark_pink.png" : "/bookmark.png"} 
-                                            alt="Watchlist" 
-                                            className="w-5 h-5 group-hover:scale-110 transition-transform"
-                                        />
-                                    )}
-                                    <span className="text-sm font-bold">
-                                        {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
-                                    </span>
-                                </button>
+                            {/* Rate Button */}
+                            <button 
+                                className="w-full bg-[#393841] hover:bg-[#4a4a52] text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-3 transition-all duration-200"
+                                onClick={() => {
+                                    if (!user) {
+                                        navigate('/login');
+                                        return;
+                                    }
+                                    setIsRatingModalOpen(true);
+                                }}
+                            >
+                                <img src="/star.png" alt="star" className="w-5 h-5" />
+                                <span className="text-sm font-bold">
+                                    {userRating ? `Your rating: ${userRating.rating}/10` : `Rate this ${isTV ? 'show' : 'movie'}`}
+                                </span>
+                            </button>
 
-                                {/* Rate Button - Updated to show user's rating */}
-                                <button 
-                                    className="w-full bg-[#393841] hover:bg-[#4a4a52] text-white 
-                                    font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-3 transition-all duration-200 group cursor-pointer"
-                                    onClick={() => {
-                                        if (!user) {
-                                            navigate('/login');
-                                            return;
-                                        }
-                                        setIsRatingModalOpen(true);
-                                    }}
-                                >
-                                    <span className="text-red-500 group-hover:scale-110 transition-transform">
-                                        <img src="/star.png" alt="star" className="w-5 h-5" />
-                                    </span>
-                                    <span className="text-sm font-bold">
-                                        {userRating ? `Your rating: ${userRating.rating}/10` : `Rate this ${isTV ? 'show' : 'movie'}`}
-                                    </span>
-                                </button>
-
-                                {/* Rating Modal */}
-                                <RatingModal
-                                    isOpen={isRatingModalOpen}
-                                    onClose={handleRatingModalClose}
-                                    mediaId={id}
-                                    mediaType={isTV ? 'tv' : 'movie'}
-                                    mediaTitle={getTitle()}
-                                />
-
+                            {/* Movie Stats Grid - 2 columns */}
+                            <div className="grid grid-cols-2 gap-2">
                                 {/* Vote Count */}
-                                <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
-                                    <div className="text-sm text-white font-bold tracking-wide mb-1">Vote Count</div>
-                                    <div className="text-[#ff75a3] font-medium">
+                                <div className="bg-[#393841] rounded-lg py-2 px-3 text-center">
+                                    <div className="text-xs text-white font-bold tracking-wide mb-1">Vote Count</div>
+                                    <div className="text-[#ff75a3] font-medium text-xs">
                                         {movieData?.vote_count && movieData.vote_count > 0
                                             ? `${movieData.vote_count.toLocaleString()} votes`
                                             : 'No votes yet'
@@ -473,54 +471,36 @@ const TrailerSection = () => {
                                 </div>
 
                                 {/* Popularity */}
-                                <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
-                                    <div className="text-sm text-white font-bold tracking-wide mb-1">Popularity</div>
-                                    <div className="text-[#ff75a3] font-semibold">
+                                <div className="bg-[#393841] rounded-lg py-2 px-3 text-center">
+                                    <div className="text-xs text-white font-bold tracking-wide mb-1">Popularity</div>
+                                    <div className="text-[#ff75a3] font-semibold text-xs">
                                         {Math.round(movieData?.popularity || 0)}
                                     </div>
                                 </div>
 
-                                {/* Release Date / Air Dates */}
+                                {/* Release Date */}
                                 {isTV ? (
                                     movieData?.first_air_date && (
-                                        <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
-                                            <div className="text-sm text-white font-bold tracking-wide mb-1">
+                                        <div className="bg-[#393841] rounded-lg py-2 px-3 text-center">
+                                            <div className="text-xs text-white font-bold tracking-wide mb-1">
                                                 {movieData?.last_air_date && movieData.status === 'Ended' ? 'Aired' : 'First Aired'}
                                             </div>
                                             <div className="text-white font-semibold text-xs">
                                                 {new Date(movieData.first_air_date).toLocaleDateString('en-US', { 
-                                                    month: 'long', 
+                                                    month: 'short', 
                                                     day: 'numeric', 
                                                     year: 'numeric' 
                                                 })}
-                                                {movieData?.last_air_date && movieData.status === 'Ended' && (
-                                                    <>
-                                                        <br />
-                                                        <span className="text-gray-300">to</span>
-                                                        <br />
-                                                        {new Date(movieData.last_air_date).toLocaleDateString('en-US', { 
-                                                            month: 'long', 
-                                                            day: 'numeric', 
-                                                            year: 'numeric' 
-                                                        })}
-                                                    </>
-                                                )}
-                                                {(!movieData?.last_air_date || movieData.status !== 'Ended') && (
-                                                    <>
-                                                        <br />
-                                                        <span className="text-green-400">Present</span>
-                                                    </>
-                                                )}
                                             </div>
                                         </div>
                                     )
                                 ) : (
                                     movieData?.release_date && (
-                                        <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-5 px-3 text-center transition-all duration-200">
-                                            <div className="text-sm text-white font-bold tracking-wide mb-1">Released</div>
+                                        <div className="bg-[#393841] rounded-lg py-2 px-3 text-center">
+                                            <div className="text-xs text-white font-bold tracking-wide mb-1">Released</div>
                                             <div className="text-white font-semibold text-xs">
                                                 {new Date(movieData.release_date).toLocaleDateString('en-US', { 
-                                                    month: 'long', 
+                                                    month: 'short', 
                                                     day: 'numeric', 
                                                     year: 'numeric' 
                                                 })}
@@ -529,11 +509,11 @@ const TrailerSection = () => {
                                     )
                                 )}
 
-                                {/* Box Office (Movies) */}
+                                {/* Box Office (Movies only) */}
                                 {!isTV && (
-                                    <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
-                                        <div className="text-sm text-white font-bold tracking-wide mb-1">Box Office</div>
-                                        <div className="text-green-400 font-semibold">
+                                    <div className="bg-[#393841] rounded-lg py-2 px-3 text-center">
+                                        <div className="text-xs text-white font-bold tracking-wide mb-1">Box Office</div>
+                                        <div className="text-green-400 font-semibold text-xs">
                                             {movieData?.revenue && movieData.revenue > 0 
                                                 ? movieData.revenue >= 1000000000 
                                                     ? `$${(movieData.revenue / 1000000000).toFixed(1)}B`
@@ -543,22 +523,231 @@ const TrailerSection = () => {
                                         </div>
                                     </div>
                                 )}
+                            </div>
+                        </div>
 
-                                {/* Seasons (TV) */}
-                                {isTV && (
-                                    <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
-                                        <div className="text-sm text-white font-bold tracking-wide mb-1">Seasons</div>
-                                        <div className="text-[#ff75a3] font-medium">
-                                            {movieData?.number_of_seasons 
-                                                ? `${movieData.number_of_seasons} ${movieData.number_of_seasons === 1 ? 'season' : 'seasons'}`
-                                                : 'TBD'
-                                            }
+                        {/* Rating Modal */}
+                        <RatingModal
+                            isOpen={isRatingModalOpen}
+                            onClose={handleRatingModalClose}
+                            mediaId={id}
+                            mediaType={isTV ? 'tv' : 'movie'}
+                            mediaTitle={getTitle()}
+                        />
+                    </div>
+
+                    {/* DESKTOP LAYOUT (keep existing) */}
+                    <div className="hidden lg:block">
+                        {/* LEFT SIDE - POSTER AND VIDEO TOGETHER */}
+                        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-1 lg:-ml-9">
+                            
+                            {/* POSTER */}
+                            <div className="flex justify-center lg:justify-start mb-8 lg:mb-0 flex-shrink-0">
+                                <div className="relative group cursor-pointer">
+                                    <img 
+                                        src={getPosterUrl()}
+                                        alt={`${getTitle()} poster`}
+                                        className="w-70 h-auto rounded-lg shadow-2xl transform transition-transform duration-100 ease-out group-hover:scale-[1.02]"
+                                        loading="lazy"
+                                    />
+                                    
+                                    {/* Simple hover overlay */}
+                                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out rounded-lg"></div>
+                                </div>
+                            </div>
+
+                            {/* VIDEO - ENHANCED WITH YOUTUBE FALLBACK */}
+                            <div className="flex-shrink-0">
+                                {enhancedTrailer ? (
+                                    <div className="w-full mr-2">
+                                        {/* Video container with proper 16:9 aspect ratio */}
+                                        <div 
+                                            className="relative w-[746px] aspect-video bg-black rounded-lg overflow-hidden shadow-2xl select-none"
+                                            onMouseDown={(e) => e.preventDefault()}
+                                        >
+                                            <iframe
+                                                src={getYouTubeEmbedUrl(enhancedTrailer)}
+                                                title={trailerSourceInfo?.name || 'Trailer'}
+                                                className="w-full h-full select-none"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                                style={{
+                                                    userSelect: 'none',
+                                                    WebkitUserSelect: 'none',
+                                                }}
+                                                onError={() => {
+                                                    console.log('🚫 Trailer failed to load - possibly geo-blocked');
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    /* No Trailer Available - Enhanced message */
+                                    <div className="w-[745px] aspect-video flex items-center justify-center">
+                                        <div className="bg-gray-800 rounded-lg p-8 text-center">
+                                            <h3 className="text-white text-xl font-bold mb-4">No Trailer Available</h3>
+                                            <p className="text-gray-400 mb-2">
+                                                No trailer found on TMDB or YouTube for this {isTV ? 'TV show' : 'movie'}
+                                            </p>
+                                            <p className="text-gray-500 text-sm">
+                                                Our system searched both TMDB and YouTube databases
+                                            </p>
                                         </div>
                                     </div>
                                 )}
                             </div>
-                        </div>
 
+                            {/* RIGHT SIDEBAR - WATCHLIST AND RATE SECTION */}
+                            <div className="flex-shrink-0 w-64 -ml-2">
+                                <div className="h-[420px] flex flex-col justify-between">
+                                    {/* Watchlist Button - Enhanced with actual functionality */}
+                                    <button 
+                                        onClick={handleWatchlistToggle}
+                                        disabled={watchlistLoading}
+                                        className="w-full bg-[#393841] hover:bg-[#4a4a52] text-white font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-3 transition-all duration-200 group cursor-pointer"
+                                    >
+                                        {watchlistLoading ? (
+                                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        ) : (
+                                            <img 
+                                                src={inWatchlist ? "/bookmark_pink.png" : "/bookmark.png"} 
+                                                alt="Watchlist" 
+                                                className="w-5 h-5 group-hover:scale-110 transition-transform"
+                                            />
+                                        )}
+                                        <span className="text-sm font-bold">
+                                            {inWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
+                                        </span>
+                                    </button>
+
+                                    {/* Rate Button - Updated to show user's rating */}
+                                    <button 
+                                        className="w-full bg-[#393841] hover:bg-[#4a4a52] text-white 
+                                        font-medium py-3 px-6 rounded-lg flex items-center justify-center gap-3 transition-all duration-200 group cursor-pointer"
+                                        onClick={() => {
+                                            if (!user) {
+                                                navigate('/login');
+                                                return;
+                                            }
+                                            setIsRatingModalOpen(true);
+                                        }}
+                                    >
+                                        <span className="text-red-500 group-hover:scale-110 transition-transform">
+                                            <img src="/star.png" alt="star" className="w-5 h-5" />
+                                        </span>
+                                        <span className="text-sm font-bold">
+                                            {userRating ? `Your rating: ${userRating.rating}/10` : `Rate this ${isTV ? 'show' : 'movie'}`}
+                                        </span>
+                                    </button>
+
+                                    {/* Rating Modal */}
+                                    <RatingModal
+                                        isOpen={isRatingModalOpen}
+                                        onClose={handleRatingModalClose}
+                                        mediaId={id}
+                                        mediaType={isTV ? 'tv' : 'movie'}
+                                        mediaTitle={getTitle()}
+                                    />
+
+                                    {/* Vote Count */}
+                                    <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
+                                        <div className="text-sm text-white font-bold tracking-wide mb-1">Vote Count</div>
+                                        <div className="text-[#ff75a3] font-medium">
+                                            {movieData?.vote_count && movieData.vote_count > 0
+                                                ? `${movieData.vote_count.toLocaleString()} votes`
+                                                : 'No votes yet'
+                                            }
+                                        </div>
+                                    </div>
+
+                                    {/* Popularity */}
+                                    <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
+                                        <div className="text-sm text-white font-bold tracking-wide mb-1">Popularity</div>
+                                        <div className="text-[#ff75a3] font-semibold">
+                                            {Math.round(movieData?.popularity || 0)}
+                                        </div>
+                                    </div>
+
+                                    {/* Release Date / Air Dates */}
+                                    {isTV ? (
+                                        movieData?.first_air_date && (
+                                            <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
+                                                <div className="text-sm text-white font-bold tracking-wide mb-1">
+                                                    {movieData?.last_air_date && movieData.status === 'Ended' ? 'Aired' : 'First Aired'}
+                                                </div>
+                                                <div className="text-white font-semibold text-xs">
+                                                    {new Date(movieData.first_air_date).toLocaleDateString('en-US', { 
+                                                        month: 'long', 
+                                                        day: 'numeric', 
+                                                        year: 'numeric' 
+                                                    })}
+                                                    {movieData?.last_air_date && movieData.status === 'Ended' && (
+                                                        <>
+                                                            <br />
+                                                            <span className="text-gray-300">to</span>
+                                                            <br />
+                                                            {new Date(movieData.last_air_date).toLocaleDateString('en-US', { 
+                                                                month: 'long', 
+                                                                day: 'numeric', 
+                                                                year: 'numeric' 
+                                                            })}
+                                                        </>
+                                                    )}
+                                                    {(!movieData?.last_air_date || movieData.status !== 'Ended') && (
+                                                        <>
+                                                            <br />
+                                                            <span className="text-green-400">Present</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    ) : (
+                                        movieData?.release_date && (
+                                            <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-5 px-3 text-center transition-all duration-200">
+                                                <div className="text-sm text-white font-bold tracking-wide mb-1">Released</div>
+                                                <div className="text-white font-semibold text-xs">
+                                                    {new Date(movieData.release_date).toLocaleDateString('en-US', { 
+                                                        month: 'long', 
+                                                        day: 'numeric', 
+                                                        year: 'numeric' 
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )
+                                    )}
+
+                                    {/* Box Office (Movies) */}
+                                    {!isTV && (
+                                        <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
+                                            <div className="text-sm text-white font-bold tracking-wide mb-1">Box Office</div>
+                                            <div className="text-green-400 font-semibold">
+                                                {movieData?.revenue && movieData.revenue > 0 
+                                                    ? movieData.revenue >= 1000000000 
+                                                        ? `$${(movieData.revenue / 1000000000).toFixed(1)}B`
+                                                        : `$${(movieData.revenue / 1000000).toFixed(0)}M`
+                                                    : 'TBD'
+                                                }
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Seasons (TV) */}
+                                    {isTV && (
+                                        <div className="bg-[#393841] hover:bg-[#4a4a52] rounded-lg py-2 px-3 text-center transition-all duration-200">
+                                            <div className="text-sm text-white font-bold tracking-wide mb-1">Seasons</div>
+                                            <div className="text-[#ff75a3] font-medium">
+                                                {movieData?.number_of_seasons 
+                                                    ? `${movieData.number_of_seasons} ${movieData.number_of_seasons === 1 ? 'season' : 'seasons'}`
+                                                    : 'TBD'
+                                                }
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

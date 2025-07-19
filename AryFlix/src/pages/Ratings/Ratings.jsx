@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useRating } from '../../contexts/RatingContext';
-import usePageTitle from '../../hooks/usePageTitle';
 
 function Ratings() {
   const navigate = useNavigate();
@@ -13,9 +12,6 @@ function Ratings() {
   
   // Get rating data from context
   const { user, getAllUserRatings, deleteRating } = useRating();  // Add deleteRating import
-
-  // Set page title
-  usePageTitle('Your Ratings');
 
   // Simple delay to prevent flash on page refresh
   useEffect(() => {
@@ -240,12 +236,13 @@ function Ratings() {
         ) : (
           // Rating items - horizontal list layout (same as watchlist)
           <div className="space-y-4">
+            {/* Loop through rated items and create a card for each */}
             {detailedItems.map((item) => (
               <div key={`${item.media_type}-${item.media_id}`} 
                    className="py-4 px-4 bg-[#1c1c1f] transition-colors rounded-lg">
                 
                 {/* Main content row */}
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   {/* Poster Image */}
                   <div className="flex-shrink-0">
                     <img
@@ -283,7 +280,7 @@ function Ratings() {
                       <img 
                         src="/info_icon.png" 
                         alt="Info" 
-                        className="w-10 h-10 transition-all duration-200 hover:brightness-75 hover:saturate-150" 
+                        className="w-6 h-6 sm:w-10 sm:h-10 transition-all duration-200 hover:brightness-75 hover:saturate-150" 
                       />
                     </button>
 
@@ -296,7 +293,7 @@ function Ratings() {
                       <img 
                         src="/redX_icon.png" 
                         alt="Remove" 
-                        className="w-10 h-10 transition-all duration-200 hover:brightness-75 hover:saturate-150" 
+                        className="w-6 h-6 sm:w-10 sm:h-10 transition-all duration-200 hover:brightness-75 hover:saturate-150" 
                       />
                     </button>
                   </div>

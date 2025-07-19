@@ -269,7 +269,7 @@ function Watchlist() {
                    className="py-4 px-4 bg-[#1c1c1f]  transition-colors rounded-lg">
                 
                 {/* Main content row */}
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   {/* Poster Image */}
                   <div className="flex-shrink-0">
                     <img
@@ -281,10 +281,10 @@ function Watchlist() {
 
                   {/* Movie/Show Info */}
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-white mb-1">
+                    <h3 className="text-base sm:text-lg font-semibold text-white mb-1">
                       {item.details?.title || item.details?.name}
                     </h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-400">
                       <span>{formatYearDisplay(item)}</span>
                       <span>•</span>
                       <span>{formatDuration(item)}</span>
@@ -292,8 +292,8 @@ function Watchlist() {
                       <span>{getContentRating(item)}</span>
                       <span>•</span>
                       <div className="flex items-center">
-                        <img src="/star.png" alt="Rating" className="w-3 h-3 mr-1" />
-                        <span className="text-yellow-400">{item.details?.vote_average?.toFixed(1)}</span>
+                        <img src="/star.png" alt="Rating" className="w-4 h- mr-1" />
+                        <span className="text-yellow-400 font-bold">{item.details?.vote_average?.toFixed(1)}</span>
                       </div>
                     </div>
                     {/* Genre Tags - moved inside movie info */}
@@ -320,7 +320,7 @@ function Watchlist() {
                       <img 
                         src="/info_icon.png" 
                         alt="Info" 
-                        className="w-10 h-10 transition-all duration-200 hover:brightness-75 hover:saturate-150" 
+                        className="w-6 h-6 sm:w-10 sm:h-10 transition-all duration-200 hover:brightness-75 hover:saturate-150" 
                       />
                     </button>
 
@@ -333,7 +333,7 @@ function Watchlist() {
                       <img 
                         src="/redX_icon.png" 
                         alt="Remove" 
-                        className="w-10 h-10 transition-all duration-200 hover:brightness-75 hover:saturate-150" 
+                        className="w-6 h-6 sm:w-10 sm:h-10 transition-all duration-200 hover:brightness-75 hover:saturate-150" 
                       />
                     </button>
                   </div>

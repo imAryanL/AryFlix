@@ -1,6 +1,6 @@
 import React from 'react';
 
-const StreamingProviders = ({ movieData, isTV }) => {
+const StreamingProviders = ({ movieData, isTV, mobile = false }) => {
     // Get streaming providers for US region
     const getStreamingProviders = () => {
         if (!movieData?.['watch/providers']?.results?.US) return null;
@@ -138,6 +138,81 @@ const StreamingProviders = ({ movieData, isTV }) => {
         index === self.findIndex(p => p.provider_id === provider.provider_id)
     );
 
+    // MOBILE LAYOUT
+    if (mobile) {
+        return (
+            <div className="space-y-3 mb-6 mt-6"> {/* Added mt-6 for more spacing from previous section */}
+                {/* Theater Status - Mobile */}
+                {theaterStatus && (
+                    <div className="bg-[#393841] rounded-lg p-3 text-center">
+                        <div className="text-white font-bold text-sm mb-2">
+                            {theaterStatus.message}
+                        </div>
+                        {theaterStatus.type === 'in_theaters' ? (
+                            <button
+                                onClick={() => {
+                                    const fandangoUrl = `https://www.fandango.com/search/?q=${encodeURIComponent(movieData.title || movieData.name)}`;
+                                    window.open(fandangoUrl, '_blank', 'noopener,noreferrer');
+                                }}
+                                className="bg-[#E91E63] hover:bg-[#F06292] text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                            >
+                                🎫 Get Tickets
+                            </button>
+                        ) : (
+                            <div className="text-gray-300 text-sm">
+                                {theaterStatus.releaseDate.toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric' 
+                                })}
+                            </div>
+                        )}
+                    </div>
+                )}
+                
+                {/* Streaming Providers - Mobile */}
+                {providers && (
+                    <>
+                        {providers.streaming && providers.streaming.length > 0 && (
+                            <div className="bg-[#393841] rounded-lg p-3 text-center">
+                                <div className="text-white font-bold text-sm mb-2">Streaming On</div>
+                                <div className="flex items-center justify-center gap-2">
+                                    <img 
+                                        src={`https://image.tmdb.org/t/p/original${providers.streaming[0].logo_path}`}
+                                        alt={providers.streaming[0].provider_name}
+                                        className="w-8 h-8 rounded-lg"
+                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                    <span className="text-white text-sm font-bold">
+                                        {providers.streaming[0].provider_name}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {uniqueRentBuy.length > 0 && (
+                            <div className="bg-[#393841] rounded-lg p-3 text-center">
+                                <div className="text-white font-bold text-sm mb-2">Rent or Buy</div>
+                                <div className="flex items-center justify-center gap-2">
+                                    <img 
+                                        src={`https://image.tmdb.org/t/p/original${uniqueRentBuy[0].logo_path}`}
+                                        alt={uniqueRentBuy[0].provider_name}
+                                        className="w-8 h-8 rounded-lg"
+                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                    />
+                                    <span className="text-white text-sm font-bold">
+                                        {uniqueRentBuy[0].provider_name}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
+        );
+    }
+
+    // DESKTOP LAYOUT (keep existing)
     return (
         <div className="w-70 lg:w-70 -mt-8 lg:-mt-22">
             <div className="space-y-3">

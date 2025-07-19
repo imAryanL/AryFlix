@@ -146,7 +146,7 @@ const HeroSection = () => {
           <div className="px-4 sm:px-6 lg:px-8 w-full">
             <div className="max-w-xl ml-13">
               {/* Movie Title */}
-              <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold text-white mb-3 leading-tight">
+              <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-4xl font-bold text-white mb-3 leading-tight">
                 {(currentItem.title || currentItem.name)?.toUpperCase()}
               </h1>
               
@@ -185,27 +185,27 @@ const HeroSection = () => {
           </div>
 
           {/* Navigation Arrows */}
-          {/* Left Arrow */}
+          {/* Left Arrow - SMALLER ON MOBILE */}
           <button
             onClick={goToPrevious}
-            className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-[#C2185B] active:bg-[#C2185B] text-white p-3 rounded-full transition-all active:scale-90 duration-200 z-30 cursor-pointer"
+            className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-[#C2185B] active:bg-[#C2185B] text-white p-3 rounded-full transition-all active:scale-90 duration-200 z-30 cursor-pointer border-1 border-white"
           >
             <img 
               src="/left-arrow.png" 
               alt="Scroll left"
-              className="w-6 h-6"
+              className="w-3 h-3 sm:w-6 sm:h-6"
             />
           </button>
 
-          {/* Right Arrow */}
+          {/* Right Arrow - SMALLER ON MOBILE */}
           <button
             onClick={goToNext}
-            className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-[#C2185B] active:bg-[#C2185B] text-white p-3 rounded-full transition-all active:scale-90 duration-200 z-30 cursor-pointer"
+            className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-[#C2185B] active:bg-[#C2185B] text-white p-3 rounded-full transition-all active:scale-90 duration-200 z-30 cursor-pointer border-1 border-white"
           >
             <img
               src="/right-arrow.png"
               alt="Scroll right"
-              className="w-6 h-6"
+              className="w-3 h-3 sm:w-6 sm:h-6"
             />
           </button>
         </div>

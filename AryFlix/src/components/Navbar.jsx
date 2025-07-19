@@ -72,44 +72,57 @@ const Navbar = () => {
             <Link to="/" className="flex items-center">
               <img 
                 src="/popcorn.png" 
-                className="h-9 w-9 " 
+                className="h-6 w-6 sm:h-9 sm:w-9"
                 alt="AryFlix Logo"
               />
-              <span className="text-white text-3xl font-[1000] whitespace-nowrap mt-2">AryFlix</span>
+              <span className="text-white text-base sm:text-xl md:text-2xl lg:text-3xl font-[1000] whitespace-nowrap mt-1 sm:mt-2">AryFlix</span>
             </Link>
           </div>
 
-          {/* Search Bar - hidden on mobile, visible on larger screens */}
+          {/* Search Bar - HIDDEN on mobile, VISIBLE on larger screens */}
           <div className="hidden md:flex items-center justify-center flex-1 max-w-xl mx-6">
             <SearchBar />
           </div>
 
           {/* Navigation Links */}
-          <div className="flex items-center space-x-4 flex-shrink-0">
+          <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-shrink-0">
+            
+            {/* Search Icon - ONLY VISIBLE ON MOBILE */}
+            <Link 
+              to="/search/browse" 
+              className="text-white flex items-center px-2.5 py-2.5 rounded hover:bg-gray-700 block md:hidden"
+            >
+              <img
+                src="/searchbar_icon.png"
+                className="h-6 w-6"
+                alt="Search"
+              />
+            </Link>
+
             {/* Watchlist - only show if user is logged in */}
             {user && (
               <Link 
                 to="/watchlist" 
-                className="text-white flex items-center px-2.5 py-2.5 rounded hover:bg-gray-700"
+                className="text-white flex items-center px-2.5 py-2.5 rounded hover:bg-gray-700 ml-4"
               >
                 <img
                   src="/bookmark.png"
-                  className="h-4 w-4 mr-1.5"
+                  className="h-5 w-5 mr-1.5"
                   alt="Watchlist"
                 />
                 <span className="hidden sm:inline text-sm font-bold">Watchlist</span>
               </Link>
             )}
 
-            {/* Ratings - only show if user is logged in */}
+            {/* Ratings - HIDDEN on mobile, VISIBLE on desktop */}
             {user && (
               <Link 
                 to="/ratings" 
-                className="text-white flex items-center px-2.5 py-2.5 rounded hover:bg-gray-700"
+                className="text-white flex items-center px-2.5 py-2.5 rounded hover:bg-gray-700 hidden md:flex"
               >
                 <img
                   src="/star.png"
-                  className="h-4 w-4 mr-1.5"
+                  className="h-5 w-5 mr-1.5"
                   alt="Ratings"
                 />
                 <span className="hidden sm:inline text-sm font-bold">Ratings</span>
@@ -136,14 +149,14 @@ const Navbar = () => {
                     className="w-6 h-6 rounded-full border-2 border-white/20"
                   />
                   
-                  {/* Username - SMALLER font to match watchlist */}
-                  <span className="text-sm">{getDisplayName()}</span>
+                  {/* Username - HIDDEN on mobile, VISIBLE on desktop */}
+                  <span className="text-sm hidden md:inline">{getDisplayName()}</span>
                   
-                  {/* Custom arrow images */}
+                  {/* Arrow - HIDDEN on mobile, VISIBLE on desktop */}
                   <img 
                     src={showDropdown ? "/up_arrow.png" : "/down_arrow.png"}
                     alt={showDropdown ? "Close menu" : "Open menu"}
-                    className="ml-2 w-3 h-3"
+                    className="ml-2 w-3 h-3 hidden md:inline"
                   />
                 </button>
 

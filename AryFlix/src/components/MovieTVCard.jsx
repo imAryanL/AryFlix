@@ -82,13 +82,12 @@ function MovieTVCard({
   };
 
   return (
-    // Card container - SMALLER SIZE like IMDb cards (allows 6 cards to show)
-    // All cards will be exactly the same size regardless of content
+    // Card container - COMPACT like IMDb cards (allows exactly 6 cards to show)
     <div 
       className={`
-        w-[180px]
-        ${showGetTickets ? 'h-[425px]' : 'h-[380px]'} 
-       bg-[#1c1c1f]
+        w-36 sm:w-40 md:w-44 lg:w-48  
+        ${showGetTickets ? 'h-[450px] sm:h-[430px] md:h-[440px] lg:h-[450px]' : 'h-[380px] sm:h-[390px] md:h-[400px] lg:h-[410px]'}
+        bg-[#1c1c1f]
         rounded-lg 
         overflow-hidden 
         shadow-md 
@@ -102,8 +101,8 @@ function MovieTVCard({
       `}
       onClick={handleCardClick}
     >
-      {/* Poster Image - SMALLER HEIGHT to match proportions */}
-      <div className="relative h-64 flex-shrink-0">
+      {/* Poster Image - TALLER on mobile to fill more card space */}
+      <div className="relative h-64 sm:h-52 md:h-56 lg:h-70 flex-shrink-0">
         <img 
           src={posterUrl || '/movie_placeholder.png'} 
           alt={`${title} poster`}

@@ -25,7 +25,7 @@ const SearchBar = ({ isMobile = false }) => {
       const apiResponse = await response.json();
       const data = apiResponse.data || [];
       
-      setSuggestions(data.slice(0, 7)); // Show top 5 suggestions
+      setSuggestions(data.slice(0, 8)); // Show top 8 suggestions
       setShowDropdown(true);
     } catch (error) {
       console.error('Error fetching suggestions:', error);

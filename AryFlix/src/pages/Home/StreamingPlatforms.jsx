@@ -91,7 +91,7 @@ const StreamingPlatforms = () => {
             // Store content in state
             setPlatformContent(prev => ({
                 ...prev,
-                [platform]: data.data.slice(0, 20) // Limit to 20 items
+                [platform]: data.data.slice(0, 30) // Limit to 20 items
             }));
 
             console.log(`✅ ${platforms[platform].name}: ${data.data.length} items loaded`);
