@@ -401,56 +401,92 @@ const getTrendingAnime = async () => {
 // Generic function that can handle different streaming platforms by provider ID
 const getStreamingPlatformContent = async (providerId, platformName) => {
     try {
-        console.log(`${getEmoji(platformName)} Fetching content for ${platformName}...`);
+        console.log(`${getEmoji(platformName)} Getting popular content on ${platformName} (excluding talk shows & kids content)...`);
         
-        // Make same requests for movies and TV shows from the platform
-        const [movieResponse, tvResponse] = await Promise.all([
+        // Get today's date (no future movies/shows)
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Genre IDs to exclude
+        const excludedGenres = [
+            10767, // Talk shows
+            10763, // News  
+            10764, // Reality TV
+            10762, // Kids
+            10751  // Family (often kids-oriented)
+        ];
+        
+        // Get popular movies and TV shows on this platform
+        const [movies, tvShows] = await Promise.all([
+            // Popular movies on this platform
             tmdbApi.get('/discover/movie', {
                 params: {
-                    'with_watch_providers': providerId,
-                    'watch_region': 'US',
-                    'sort_by': 'vote_average.desc',      // Sort by rating instead
-                    'vote_count.gte': getVoteThreshold(platformName, 'movie'), // Dynamic threshold
-                    'vote_average.gte': 7.0,             // Only highly rated movies
-                    'primary_release_date.gte': '2000-01-01', // Include Breaking Bad era movies
-                    'with_original_language': 'en'
+                    'with_watch_providers': providerId,  // Must be on this platform
+                    'watch_region': 'US',                // US region
+                    'sort_by': 'popularity.desc',        // Most popular first
+                    'primary_release_date.lte': today,   // No future movies
+                    'vote_count.gte': 10,                // Has some reviews
+                    'without_genres': excludedGenres.join(',') // NO unwanted genres
                 }
             }),
+            // Popular TV shows on this platform
             tmdbApi.get('/discover/tv', {
                 params: {
-                    'with_watch_providers': providerId,
-                    'watch_region': 'US',
-                    'sort_by': 'vote_average.desc',      // Sort by rating instead
-                    'vote_count.gte': 100,               // Lower threshold
-                    'vote_average.gte': 7.0,             // Only highly rated shows
-                    'first_air_date.gte': '2000-01-01',  // Include Breaking Bad era (2008-2013)
-                    'with_original_language': 'en'
+                    'with_watch_providers': providerId,  // Must be on this platform
+                    'watch_region': 'US',                // US region
+                    'sort_by': 'popularity.desc',        // Most popular first
+                    'first_air_date.lte': today,         // No future shows
+                    'vote_count.gte': 10,                // Has some reviews
+                    'without_genres': excludedGenres.join(',') // NO unwanted genres
                 }
             })
         ]);
         
-        // Combine movies and TV shows
-        const movies = movieResponse.data.results.map(item => ({...item, media_type: 'movie'}));
-        const tvShows = tvResponse.data.results.map(item => ({...item, media_type: 'tv'}));
-        const combinedContent = [...movies, ...tvShows];
+        // Add media type to each item
+        const movieList = movies.data.results.map(movie => ({
+            ...movie,
+            media_type: 'movie'
+        }));
         
-        // Sort by a combination of rating and popularity
-        combinedContent.sort((a, b) => {
-            const scoreA = (a.vote_average * 0.6) + (Math.log(a.popularity) * 0.4);
-            const scoreB = (b.vote_average * 0.6) + (Math.log(b.popularity) * 0.4);
-            return scoreB - scoreA;
+        const tvList = tvShows.data.results.map(show => ({
+            ...show,
+            media_type: 'tv'
+        }));
+        
+        // Combine movies and TV shows
+        let allContent = [...movieList, ...tvList];
+        
+        // Extra filter: Remove any remaining unwanted content
+        allContent = allContent.filter(item => {
+            if (!item.genre_ids) return true; // Keep if no genre info
+            
+            // Remove if contains any excluded genre
+            const hasExcludedGenre = item.genre_ids.some(genreId => excludedGenres.includes(genreId));
+            if (hasExcludedGenre) return false;
+            
+            // Extra check: Remove obvious kids content by title keywords
+            const title = (item.title || item.name || '').toLowerCase();
+            const kidsKeywords = ['kids', 'children', 'baby', 'toddler', 'sesame', 'barney', 'dora'];
+            const hasKidsKeyword = kidsKeywords.some(keyword => title.includes(keyword));
+            
+            return !hasKidsKeyword; // Keep if no kids keywords
         });
         
-        console.log(`${getEmoji(platformName)} Found ${combinedContent.length} quality titles`);
-        console.log(`${getEmoji(platformName)} Top 3:`, combinedContent.slice(0, 3).map(item => 
-            `${item.title || item.name} (${item.vote_average}/10)`
+        // Sort by popularity (highest first)
+        allContent.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+        
+        // Take top 25 items
+        const topContent = allContent.slice(0, 25);
+        
+        console.log(`${getEmoji(platformName)} Found ${topContent.length} popular items (no talk shows or kids content)`);
+        console.log(`${getEmoji(platformName)} Top 5:`, topContent.slice(0, 5).map(item => 
+            `${item.title || item.name} (Pop: ${Math.round(item.popularity)})`
         ));
         
-        return combinedContent.slice(0, 20);
+        return topContent;
         
     } catch (error) {
-        console.error(`Error fetching ${platformName} content:`, error.message);
-        throw new Error(`Failed to fetch ${platformName} content`);
+        console.error(`Error getting ${platformName} content:`, error.message);
+        throw new Error(`Failed to get ${platformName} content`);
     }
 };
 
