@@ -2,7 +2,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import MovieTvDetail from './pages/MovieTvDetail/MovieTvDetail';
 import SearchResults from './pages/SearchResults/SearchResults';
-import Filter from './pages/Filter/Filter';  // Add Filter import
+import Filter from './pages/Filter/Filter';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Watchlist from './pages/Watchlist/Watchlist';
@@ -10,6 +10,7 @@ import Ratings from './pages/Ratings/Ratings';
 import ErrorPage from './pages/ErrorPage/ErrorPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 // Watchlist Context - shares watchlist data across all components
 import { WatchlistProvider } from './contexts/WatchlistContext';
@@ -29,8 +30,9 @@ function App() {
     <WatchlistProvider>
       <RatingProvider>
         <div className={`${isDetailPage ? 'bg-[#1f1f22]' : 'bg-black'} min-h-screen text-white flex flex-col`}>
+          <ScrollToTop />
           <Navbar />
-          
+              
           {/* Conditional container based on page type */}
           {isHomePage ? (
             // Home page: Use navbar-aligned container
@@ -46,7 +48,7 @@ function App() {
                 <Route path="/movie/:id" element={<MovieTvDetail />} />
                 <Route path="/tv/:id" element={<MovieTvDetail />} />
                 <Route path="/search/:query" element={<SearchResults />} />
-                <Route path="/filter" element={<Filter />} />  {/* Add Filter route */}
+                <Route path="/filter" element={<Filter />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/watchlist" element={<Watchlist />} />
