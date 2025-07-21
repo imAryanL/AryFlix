@@ -2,10 +2,11 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import MovieTvDetail from './pages/MovieTvDetail/MovieTvDetail';
 import SearchResults from './pages/SearchResults/SearchResults';
+import Filter from './pages/Filter/Filter';  // Add Filter import
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Watchlist from './pages/Watchlist/Watchlist';
-import Ratings from './pages/Ratings/Ratings';  // Import new Ratings page
+import Ratings from './pages/Ratings/Ratings';
 import ErrorPage from './pages/ErrorPage/ErrorPage';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -45,10 +46,11 @@ function App() {
                 <Route path="/movie/:id" element={<MovieTvDetail />} />
                 <Route path="/tv/:id" element={<MovieTvDetail />} />
                 <Route path="/search/:query" element={<SearchResults />} />
+                <Route path="/filter" element={<Filter />} />  {/* Add Filter route */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/watchlist" element={<Watchlist />} />
-                <Route path="/ratings" element={<Ratings />} />  {/* Add new ratings route */}
+                <Route path="/ratings" element={<Ratings />} />
                 <Route path="*" element={<ErrorPage />} />
               </Routes>
             </div>

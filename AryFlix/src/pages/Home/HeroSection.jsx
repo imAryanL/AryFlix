@@ -188,7 +188,7 @@ const HeroSection = () => {
           {/* Left Arrow - SMALLER ON MOBILE */}
           <button
             onClick={goToPrevious}
-            className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-[#C2185B] active:bg-[#C2185B] text-white p-3 rounded-full transition-all active:scale-90 duration-200 z-30 cursor-pointer border-1 border-white"
+            className="absolute left-6 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-[#C2185B] active:bg-[#C2185B] text-white p-3 rounded-full transition-all active:scale-70 duration-200 z-30 cursor-pointer border-1 border-white"
           >
             <img 
               src="/left-arrow.png" 
@@ -200,7 +200,7 @@ const HeroSection = () => {
           {/* Right Arrow - SMALLER ON MOBILE */}
           <button
             onClick={goToNext}
-            className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-[#C2185B] active:bg-[#C2185B] text-white p-3 rounded-full transition-all active:scale-90 duration-200 z-30 cursor-pointer border-1 border-white"
+            className="absolute right-6 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-[#C2185B] active:bg-[#C2185B] text-white p-3 rounded-full transition-all active:scale-70 duration-200 z-30 cursor-pointer border-1 border-white"
           >
             <img
               src="/right-arrow.png"

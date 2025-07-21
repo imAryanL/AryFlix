@@ -16,7 +16,6 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
   
   // Show loading and errors
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +37,6 @@ function Signup() {
       !email ? 'Please enter your email' :
       !password ? 'Please enter a password' :
       password !== confirmPassword ? 'Your passwords do not match' :
-      !agreeToTerms ? 'Please accept the terms and conditions' :
       null;
 
     // If there's an error, show it and stop
@@ -118,7 +116,7 @@ function Signup() {
         </div>
 
         {/* Main Form Card - UPDATED to bg-gray-800 to match your other components */}
-        <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
+        <div className="bg-[#303035] rounded-2xl shadow-2xl p-8 border border-gray-700">
           
           {/* Show error message if there is one */}
           {errorMessage && (
@@ -154,7 +152,7 @@ function Signup() {
                       setUsername(cleanValue);
                     }
                   }}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
                   placeholder="superman_fan_123"
                 />
                 {/* Character counter */}
@@ -179,7 +177,7 @@ function Signup() {
                     let cleanEmail = e.target.value.replace(/ /g, '');
                     setEmail(cleanEmail);
                   }}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
                   placeholder="you@example.com"
                 />
               </div>
@@ -195,7 +193,7 @@ function Signup() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
                   placeholder=""
                 />
               </div>
@@ -211,32 +209,10 @@ function Signup() {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder-gray-500 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
                   placeholder=""
                 />
               </div>
-            </div>
-
-            {/* Terms checkbox */}
-            <div className="flex items-start space-x-3">
-              <div className="flex items-center h-5">
-                <input
-                  type="checkbox"
-                  checked={agreeToTerms}
-                  onChange={(e) => setAgreeToTerms(e.target.checked)}
-                  className="w-4 h-4 text-[#E91E63] bg-gray-700 border-gray-600 rounded focus:ring-[#E91E63] focus:ring-2 cursor-pointer"
-                />
-              </div>
-              <label className="text-sm text-gray-300 leading-5">
-                I agree to AryFlix's{" "}
-                <a href="#" className="text-[#E91E63] hover:text-[#F06292] font-medium">
-                  Terms of Service
-                </a>
-                {" "}and{" "}
-                <a href="#" className="text-[#E91E63] hover:text-[#F06292] font-medium">
-                  Privacy Policy
-                </a>
-              </label>
             </div>
 
             {/* Create account button */}

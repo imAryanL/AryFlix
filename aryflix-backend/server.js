@@ -11,7 +11,8 @@ const cors = require('cors');
 const { getTrendingMovies, getTrendingTVShows, getNowPlayingMovies, getPopularTVShows, getUpcomingMovies, 
     getUpcomingTVShows, getTrendingAnime, getNetflixContent, getPrimeVideoContent, getDisneyPlusContent, 
     getMaxContent, getAppleTVContent, getStreamingProviderLogos, getMovieDetails, getTVDetails,
-    getMovieDetailsWithTrailer, getTVDetailsWithTrailer, getWatchAtHomeContent, searchMoviesAndTV } = require('./tmdbAPI');
+    getMovieDetailsWithTrailer, getTVDetailsWithTrailer, getWatchAtHomeContent, searchMoviesAndTV, 
+    getFilteredContent } = require('./tmdbAPI'); // Added getFilteredContent for filtering/sorting
 
 // Import OMDb API functions for ratings
 const { getRatingsByImdbId, getRatingsByTitle } = require('./omdbApi');
@@ -795,6 +796,67 @@ app.get('/api/search/:query', async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to search content'
+        });
+    }
+});
+
+// Filter and sort movies and TV shows with pagination
+// GET request to http://localhost:5000/api/filter
+app.get('/api/filter', async (req, res) => {
+    try {
+        // Get filter parameters from URL query string
+        const {
+            genres,        // "28,35,18" (comma-separated genre IDs)
+            type,          // "movie", "tv", or "all"
+            yearMin,       // "2020" (minimum year)
+            yearMax,       // "2025" (maximum year)
+            ratingMin,     // "7.0" (minimum rating)
+            sortBy,        // "popularity", "rating", "date", "title"
+            page,          // "1" (page number)
+            limit          // "50" (results per page) - NEW!
+        } = req.query;
+
+        console.log('🔍 Filter request with params:', req.query);
+
+        // Convert genres string to array, handling both numbers and special cases
+        const genreArray = genres ? genres.split(',').map(item => {
+            const trimmed = item.trim();
+            if (trimmed === 'anime') return 'anime';
+            const num = parseInt(trimmed);
+            return !isNaN(num) ? num : null;
+        }).filter(item => item !== null) : [];
+
+        // Build clean filter options object
+        const filterOptions = {
+            genres: genreArray,
+            type: type || 'all',
+            yearMin: yearMin ? parseInt(yearMin) : null,
+            yearMax: yearMax ? parseInt(yearMax) : null,
+            ratingMin: ratingMin ? parseFloat(ratingMin) : null,
+            sortBy: sortBy || 'popularity',
+            page: page ? parseInt(page) : 1,
+            limit: limit ? parseInt(limit) : 50  // NEW: Default to 50 results per page
+        };
+
+        // Call our filtering function
+        const results = await getFilteredContent(filterOptions);
+
+        console.log(`🔍 Returning ${results.length} filtered results for page ${filterOptions.page}`);
+
+        // Send filtered results back to client
+        res.json({
+            success: true,
+            data: results,
+            filters: filterOptions,
+            count: results.length,
+            page: filterOptions.page,        // NEW: Current page
+            hasMore: results.length === filterOptions.limit  // NEW: Are there more results?
+        });
+    } catch (error) {
+        console.error('Error for filter request:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to filter content'
         });
     }
 });

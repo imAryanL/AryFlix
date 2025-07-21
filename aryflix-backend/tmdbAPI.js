@@ -1249,6 +1249,193 @@ const calculateSmartScore = (title, query, popularity, rating, voteCount) => {
 // - Word matches: 2 words * 5 = 10 points
 // - TOTAL: ~264 points (LOSER!)
 
+// Advanced filtering and sorting function for movies and TV shows
+const getFilteredContent = async (filterOptions = {}) => {
+    try {
+        const {
+            genres = [],
+            type = 'all',
+            yearMin = null,
+            yearMax = null,
+            ratingMin = null,
+            sortBy = 'popularity',
+            page = 1,
+            limit = 50  // NEW: Results per page
+        } = filterOptions;
+
+        console.log('🔍 Filtering content (page ${page}, limit ${limit}):', filterOptions);
+
+        // Calculate which TMDB pages to fetch based on total results needed
+        const resultsPerTmdbPage = 20;
+        // Calculate TOTAL results needed across all user pages so far
+        const totalResultsNeeded = page * limit; // Total results needed for this page
+        const tmdbPagesToFetch = Math.ceil(totalResultsNeeded / resultsPerTmdbPage); // TMDB pages to fetch
+        
+        console.log(`📄 Page ${page}: Need ${totalResultsNeeded} total results, fetching ${tmdbPagesToFetch} TMDB pages`);
+
+        const results = [];
+
+        // Check if anime is requested as a special filter
+        const isAnimeFilter = genres.includes('anime');
+        // Remove 'anime' from genres and keep only numeric genre IDs
+        const numericGenres = genres.filter(genre => typeof genre === 'number');
+
+        // Fetch movies if requested
+        if (type === 'all' || type === 'movie') {
+            const movieParams = {
+                // Choose sort method
+                sort_by: sortBy === 'rating' ? 'vote_average.desc' : 
+                        sortBy === 'date' ? 'primary_release_date.desc' : 
+                        'popularity.desc',
+                vote_count: { gte: 10 } // Only movies with some reviews
+            };
+
+            // Handle anime filter (Animation + Japanese origin)
+            if (isAnimeFilter) {
+                movieParams.with_genres = '16'; // Animation genre
+                movieParams.with_original_language = 'ja'; // Japanese language
+                movieParams.with_origin_country = 'JP'; // From Japan
+                console.log('🎌 Filtering for anime movies');
+            } else if (numericGenres.length > 0) {
+                // Add regular genre filter if provided
+                movieParams.with_genres = numericGenres.join(',');
+            }
+
+            // Add year range filters if provided
+            if (yearMin) movieParams['primary_release_date.gte'] = `${yearMin}-01-01`;
+            if (yearMax) movieParams['primary_release_date.lte'] = `${yearMax}-12-31`;
+            // Add rating filter if provided
+            if (ratingMin) movieParams['vote_average.gte'] = ratingMin;
+
+            // FETCH ENOUGH TMDB PAGES TO SUPPORT THIS REQUEST
+            const moviePromises = [];
+            for (let i = 1; i <= tmdbPagesToFetch; i++) {
+                moviePromises.push(
+                    tmdbApi.get('/discover/movie', { 
+                        params: { ...movieParams, page: i } 
+                    }).catch(err => ({ data: { results: [] } }))
+                );
+            }
+
+            const movieResponses = await Promise.all(moviePromises);
+            const allMovies = movieResponses.flatMap(response => response.data.results);
+            const movies = allMovies.map(item => ({ ...item, media_type: 'movie' }));
+            results.push(...movies);
+            
+            console.log(`🎬 Fetched ${movies.length} movies from ${tmdbPagesToFetch} TMDB pages`);
+        }
+
+        // Fetch TV shows if requested
+        if (type === 'all' || type === 'tv') {
+            const tvParams = {
+                // Choose sort method (TV shows use different date field)
+                sort_by: sortBy === 'rating' ? 'vote_average.desc' : 
+                        sortBy === 'date' ? 'first_air_date.desc' : 
+                        'popularity.desc',
+                vote_count: { gte: 10 } // Only shows with some reviews
+            };
+
+            // Handle anime filter (Animation + Japanese origin)
+            if (isAnimeFilter) {
+                tvParams.with_genres = '16'; // Animation genre
+                tvParams.with_original_language = 'ja'; // Japanese language
+                tvParams.with_origin_country = 'JP'; // From Japan
+                console.log('🎌 Filtering for anime TV shows');
+            } else if (numericGenres.length > 0) {
+                // Add regular genre filter if provided
+                tvParams.with_genres = numericGenres.join(',');
+            }
+
+            // Add year range filters if provided (TV uses first_air_date)
+            if (yearMin) tvParams['first_air_date.gte'] = `${yearMin}-01-01`;
+            if (yearMax) tvParams['first_air_date.lte'] = `${yearMax}-12-31`;
+            // Add rating filter if provided
+            if (ratingMin) tvParams['vote_average.gte'] = ratingMin;
+
+            const tvPromises = [];
+            for (let i = 1; i <= tmdbPagesToFetch; i++) {
+                tvPromises.push(
+                    tmdbApi.get('/discover/tv', { 
+                        params: { ...tvParams, page: i } 
+                    }).catch(err => ({ data: { results: [] } }))
+                );
+            }
+
+            const tvResponses = await Promise.all(tvPromises);
+            const allShows = tvResponses.flatMap(response => response.data.results);
+            const shows = allShows.map(item => ({ ...item, media_type: 'tv' }));
+            results.push(...shows);
+        }
+
+        // Sort mixed results
+        if (type === 'all') {
+            results.sort((a, b) => {
+                if (sortBy === 'rating') return (b.vote_average || 0) - (a.vote_average || 0);
+                if (sortBy === 'title') return (a.title || a.name || '').localeCompare(b.title || b.name || '');
+                return (b.popularity || 0) - (a.popularity || 0);
+            });
+        }
+
+        // Apply pagination to final results
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedResults = results.slice(startIndex, endIndex);
+
+        console.log(`✅ Returning ${paginatedResults.length} results for page ${page}`);
+        return paginatedResults;
+
+    } catch (error) {
+        console.error('Error filtering content:', error.message);
+        throw new Error('Failed to filter content');
+    }
+};
+
+// Helper function to convert sort options to TMDB parameters
+const getSortParameter = (sortBy, sortOrder) => {
+    const sortMappings = {
+        'popularity': 'popularity',
+        'rating': 'vote_average', 
+        'release_date': 'primary_release_date', // Will be overridden for TV
+        'title': 'title' // Will be overridden for TV
+    };
+    
+    const tmdbSort = sortMappings[sortBy] || 'popularity';
+    return `${tmdbSort}.${sortOrder}`;
+};
+
+// Helper function to sort mixed movie/TV results
+const applySorting = (a, b, sortBy, sortOrder) => {
+    let valueA, valueB;
+    
+    switch (sortBy) {
+        case 'popularity':
+            valueA = a.popularity || 0;
+            valueB = b.popularity || 0;
+            break;
+        case 'rating':
+            valueA = a.vote_average || 0;
+            valueB = b.vote_average || 0;
+            break;
+        case 'release_date':
+            valueA = new Date(a.release_date || a.first_air_date || '1900-01-01');
+            valueB = new Date(b.release_date || b.first_air_date || '1900-01-01');
+            break;
+        case 'title':
+            valueA = (a.title || a.name || '').toLowerCase();
+            valueB = (b.title || b.name || '').toLowerCase();
+            break;
+        default:
+            valueA = a.popularity || 0;
+            valueB = b.popularity || 0;
+    }
+    
+    if (sortOrder === 'asc') {
+        return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+    } else {
+        return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+    }
+};
+
 // These functions will be imported in server.js to create API endpoints
 module.exports = {
     getTrendingMovies,
@@ -1269,5 +1456,6 @@ module.exports = {
     getMovieDetailsWithTrailer,
     getTVDetailsWithTrailer,
     getWatchAtHomeContent,
-    searchMoviesAndTV
+    searchMoviesAndTV,
+    getFilteredContent
 };

@@ -99,6 +99,19 @@ const Navbar = () => {
               />
             </Link>
 
+            {/* Filter Link - VISIBLE for all users */}
+            <Link 
+              to="/filter" 
+              className="text-white flex items-center px-2.5 py-2.5 rounded hover:bg-gray-700"
+            >
+              <img
+                src="/filter.png"
+                className="h-5 w-5 mr-1.5"
+                alt="Filter"
+              />
+              <span className="hidden sm:inline text-sm font-bold">Filter</span>
+            </Link>
+
             {/* Watchlist - only show if user is logged in */}
             {user && (
               <Link 

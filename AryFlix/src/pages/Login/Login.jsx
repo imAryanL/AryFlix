@@ -84,7 +84,7 @@ function Login() {
           </p>
         </div>
 
-        <div className="bg-gray-800 rounded-2xl shadow-2xl p-8 border border-gray-700">
+        <div className="bg-[#303035] rounded-2xl shadow-2xl p-8 border border-gray-700">
           
           {successMessage && (
             <div className="mb-6 p-4 bg-green-900/50 border border-green-500 text-green-200 rounded-lg text-sm flex items-center">
@@ -118,7 +118,7 @@ function Login() {
                     let cleanEmail = e.target.value.replace(/ /g, '');
                     setEmail(cleanEmail);
                   }}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
+                  className="w-full px-4 py-3 bg-white border border- rounded-lg text-black placeholder-gray-500 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
                   placeholder="you@example.com"
                 />
               </div>
@@ -133,7 +133,7 @@ function Login() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
+                  className="w-full px-4 py-3 bg-white border border- rounded-lg text-black placeholder-gray-500 focus:border-[#E91E63] focus:ring-2 focus:ring-[#E91E63]/20 focus:outline-none transition-all duration-200"
                 />
               </div>
             </div>
@@ -144,7 +144,7 @@ function Login() {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 text-[#E91E63] bg-gray-700 border-gray-600 rounded focus:ring-[#E91E63] focus:ring-2 cursor-pointer"
+                  className="w-4 h-4 text-[#E91E63] bg-[#303035] border-gray-600 rounded focus:ring-[#E91E63] focus:ring-2 cursor-pointer"
                 />
                 <label className="ml-2 text-sm text-gray-300">
                   Remember me

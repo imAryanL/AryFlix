@@ -79,7 +79,7 @@ const ScrollableMovieSection = ({
         {showArrows && showLeftArrow && (
           <button
             onClick={scrollLeft}
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-[#C2185B] text-white p-3 rounded-full z-10 transition-all duration-200 cursor-pointer border-1 border-white hidden sm:flex"
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-[#C2185B] active:bg-[#C2185B]  active:scale-70  text-white p-3 rounded-full z-10 transition-all duration-200 cursor-pointer border-1 border-white hidden sm:flex"
             aria-label="Scroll left"
           >
             <img 
@@ -94,7 +94,7 @@ const ScrollableMovieSection = ({
         {showArrows && showRightArrow && (
           <button
             onClick={scrollRight}
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-[#C2185B] text-white p-3 rounded-full z-10 transition-all duration-200 cursor-pointer border-1 border-white hidden sm:flex"
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-[#C2185B] active:bg-[#C2185B]  active:scale-70 text-white p-3 rounded-full z-10 transition-all duration-200 cursor-pointer border-1 border-white hidden sm:flex"
             aria-label="Scroll right"
           >
             <img 
