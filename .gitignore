@@ -80,7 +80,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+
 
 # Vite
 .vite

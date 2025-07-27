@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../api';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 // Hero Section Component
 const HeroSection = () => {
@@ -81,8 +82,11 @@ const HeroSection = () => {
   // Show loading spinner while data is being fetched
   if (loading) {
     return (
-      <div className="h-[70vh] flex items-center justify-center bg-gray-900">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="h-[70vh] flex items-center justify-center bg-[#2b2b30]">
+        <div className="text-center">
+          <LoadingSpinner />
+          <div className="text-white text-xl mt-4">Loading</div>
+        </div>
       </div>
     );
   }
