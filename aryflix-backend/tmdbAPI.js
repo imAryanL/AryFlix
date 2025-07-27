@@ -162,7 +162,7 @@ const getPopularTVShows = async () => {
 
 
 // Function to get upcoming movies for "Coming Soon to Theatres" section
-// Balanced approach - more movies but still truly upcoming
+// Debug version to see what TMDB has
 const getUpcomingMovies = async () => {
     try {
         console.log('🎬 Backend: Starting to fetch upcoming movies...');
@@ -171,93 +171,30 @@ const getUpcomingMovies = async () => {
         const today = new Date();
         const todayString = today.toISOString().split('T')[0];
         
-        // Calculate a slightly more lenient date range
-        const oneWeekAgo = new Date(today);
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        const pastWeekString = oneWeekAgo.toISOString().split('T')[0];
+        // Calculate 3 months ahead
+        const threeMonthsAhead = new Date(today);
+        threeMonthsAhead.setMonth(threeMonthsAhead.getMonth() + 3);
+        const threeMonthsString = threeMonthsAhead.toISOString().split('T')[0];
         
-        // Make multiple API calls with different strategies
-        const [upcomingPage1, upcomingPage2, discoverPage1, discoverPage2] = await Promise.all([
-            // 1. TMDB upcoming - page 1
-            tmdbApi.get('/movie/upcoming', { params: { page: 1 } }),
-            
-            // 2. TMDB upcoming - page 2 (more movies)
-            tmdbApi.get('/movie/upcoming', { params: { page: 2 } }),
-            
-            // 3. Discover movies - page 1
-            tmdbApi.get('/discover/movie', {
-                params: {
-                    'primary_release_date.gte': pastWeekString, // Include movies from past week
-                    'sort_by': 'popularity.desc',
-                    'vote_count.gte': 3, // Very low threshold
-                    'page': 1
-                }
-            }),
-            
-            // 4. Discover movies - page 2
-            tmdbApi.get('/discover/movie', {
-                params: {
-                    'primary_release_date.gte': pastWeekString,
-                    'sort_by': 'release_date.desc', // Different sorting
-                    'vote_count.gte': 3,
-                    'page': 2
-                }
-            })
-        ]);
+        console.log('🎬 Backend: Date range:', todayString, 'to', threeMonthsString);
         
-        console.log(`🎬 Backend: TMDB upcoming page 1: ${upcomingPage1.data.results.length} movies`);
-        console.log(`🎬 Backend: TMDB upcoming page 2: ${upcomingPage2.data.results.length} movies`);
-        console.log(`🎬 Backend: TMDB discover page 1: ${discoverPage1.data.results.length} movies`);
-        console.log(`🎬 Backend: TMDB discover page 2: ${discoverPage2.data.results.length} movies`);
-        
-        // Combine all sources
-        const allMovies = [
-            ...upcomingPage1.data.results,
-            ...upcomingPage2.data.results,
-            ...discoverPage1.data.results,
-            ...discoverPage2.data.results
-        ];
-        
-        console.log(`🎬 Backend: Total movies before deduplication: ${allMovies.length}`);
-        
-        // Remove duplicates based on movie ID
-        const uniqueMovies = allMovies.filter((movie, index, self) => 
-            index === self.findIndex(m => m.id === movie.id)
-        );
-        
-        console.log(`🎬 Backend: Unique movies after deduplication: ${uniqueMovies.length}`);
-        
-        // More lenient filtering - include today and future
-        const upcomingMovies = uniqueMovies.filter(movie => {
-            if (!movie.release_date) return true; // Include movies without dates (might be upcoming)
-            
-            // Include movies releasing today or in the future
-            return movie.release_date >= todayString;
+        // Try the original TMDB upcoming endpoint first
+        const upcomingResponse = await tmdbApi.get('/movie/upcoming', { 
+            params: { page: 1 } 
         });
         
-        console.log(`🎬 Backend: Movies releasing today or later: ${upcomingMovies.length}`);
+        console.log(`🎬 Backend: TMDB upcoming endpoint returned ${upcomingResponse.data.results.length} movies`);
         
-        // Sort by popularity (biggest movies first)
-        upcomingMovies.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-        
-        // Log top movies for debugging
-        console.log('🎬 Backend: Top 15 upcoming movies:');
-        upcomingMovies.slice(0, 15).forEach((movie, index) => {
-            if (movie.release_date) {
-                const releaseDate = new Date(movie.release_date);
-                const daysFromNow = Math.ceil((releaseDate - today) / (1000 * 60 * 60 * 24));
-                const status = daysFromNow < 0 ? `${Math.abs(daysFromNow)} days ago` : 
-                             daysFromNow === 0 ? 'Today' : 
-                             `${daysFromNow} days away`;
-                console.log(`  ${index + 1}. ${movie.title} (${movie.release_date}) - ${status} - Pop: ${Math.round(movie.popularity || 0)}`);
-            } else {
-                console.log(`  ${index + 1}. ${movie.title} (No date) - Pop: ${Math.round(movie.popularity || 0)}`);
-            }
+        // Log what we got
+        upcomingResponse.data.results.slice(0, 10).forEach((movie, index) => {
+            console.log(`  ${index + 1}. ${movie.title} - ${movie.release_date} - Pop: ${Math.round(movie.popularity || 0)}`);
         });
         
-        return upcomingMovies.slice(0, 20);
+        // Return the original upcoming movies for now
+        return upcomingResponse.data.results.slice(0, 20);
+        
     } catch (error) {
-        console.error('Error fetching upcoming movies:', error.message);
+        console.error('Error fetching upcoming movies:', error);
         throw new Error('Failed to fetch upcoming movies');
     }
 };
