@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import MovieTVCard from '../../components/MovieTVCard';
 import ScrollableMovieSection from '../../components/ScrollableMovieSection';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { API_URL } from '../../api';
+
+// Add this debug log
+console.log('ComingSoonTheatre - API_URL:', API_URL);
 
 const ComingSoonTheatre = () => {
     // State to store the list of upcoming movies from TMDB API
@@ -15,11 +19,14 @@ const ComingSoonTheatre = () => {
     const fetchUpcomingMovies = async () => {
         try {
             console.log('🎬 Frontend: Starting to fetch upcoming movies...');
+            console.log('🎬 Frontend: API_URL is:', API_URL); // Add this line
             setLoading(true);
             setError(null);
             
             // Make API request to our backend endpoint for upcoming movies
-            const response = await fetch('http://localhost:5000/api/movies/upcoming');
+            const url = `${API_URL}/api/movies/upcoming`;
+            console.log('🎬 Frontend: About to fetch URL:', url); // Add this line
+            const response = await fetch(url);
             
             console.log('🎬 Frontend: Got response:', response.status);
             

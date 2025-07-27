@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MovieTVCard from '../../components/MovieTVCard';
 import ScrollableMovieSection from '../../components/ScrollableMovieSection';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { API_URL } from '../../api';
 
 const TrendingAnime = () => {
     // State to store the list of trending anime from TMDB API
@@ -18,7 +19,7 @@ const TrendingAnime = () => {
             setError(null);
             
             // Make API request to our backend endpoint for trending anime
-            const response = await fetch('http://localhost:5000/api/anime/trending');
+            const response = await fetch(`${API_URL}/api/anime/trending`);
             
             // Check if the HTTP request was successful
             if (!response.ok) {

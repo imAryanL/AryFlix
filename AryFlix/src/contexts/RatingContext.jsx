@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import { API_URL } from '../api';
 
 // Create the rating context
 const RatingContext = createContext();
@@ -41,7 +42,7 @@ export const RatingProvider = ({ children }) => {
         return null;
       }
 
-      const response = await fetch(`http://localhost:5000/api/ratings/${mediaId}`, {
+      const response = await fetch(`${API_URL}/api/ratings/${mediaId}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -76,7 +77,7 @@ export const RatingProvider = ({ children }) => {
 
       console.log('🔑 Token found, making API call...');
       
-      const response = await fetch('http://localhost:5000/api/ratings', {
+      const response = await fetch(`${API_URL}/api/ratings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +110,7 @@ export const RatingProvider = ({ children }) => {
   // Get average rating for a movie/TV show
   const getAverageRating = async (mediaId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/ratings/${mediaId}/average`);
+      const response = await fetch(`${API_URL}/api/ratings/${mediaId}/average`);
       const data = await response.json();
       return data.success ? data.data : null;
     } catch (error) {
@@ -134,7 +135,7 @@ export const RatingProvider = ({ children }) => {
       }
 
       // Call our new backend endpoint
-      const response = await fetch('http://localhost:5000/api/ratings/user/all', {
+      const response = await fetch(`${API_URL}/api/ratings/user/all`, {
         headers: {
           'Authorization': `Bearer ${token}`  // Send token for authentication
         }
@@ -167,7 +168,7 @@ export const RatingProvider = ({ children }) => {
       }
 
       // Call our new DELETE endpoint
-      const response = await fetch(`http://localhost:5000/api/ratings/${mediaId}`, {
+      const response = await fetch(`${API_URL}/api/ratings/${mediaId}`, {
         method: 'DELETE',                     // DELETE HTTP method
         headers: {
           'Authorization': `Bearer ${token}`  // Send token for authentication

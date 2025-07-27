@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MovieTVCard from '../../components/MovieTVCard';
 import ScrollableMovieSection from '../../components/ScrollableMovieSection';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { API_URL } from '../../api';
 
 const StreamingPlatforms = () => {
     // State for the currently active platform tab
@@ -36,7 +37,7 @@ const StreamingPlatforms = () => {
     const fetchProviderLogos = async () => {
         try {
             console.log('🎯 Fetching provider logos...');
-            const response = await fetch('http://localhost:5000/api/streaming/logos');
+            const response = await fetch('${API_URL}/api/streaming/logos');
             
             console.log('🔍 Response status:', response.status);
             
@@ -76,7 +77,7 @@ const StreamingPlatforms = () => {
             console.log(`🎬 Fetching ${platforms[platform].name} content...`);
 
             // Make API request to our backend endpoint
-            const response = await fetch(`http://localhost:5000/api/streaming/${platform}`);
+            const response = await fetch(`${API_URL}/api/streaming/${platform}`);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

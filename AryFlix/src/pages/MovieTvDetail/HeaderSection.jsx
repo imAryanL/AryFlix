@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { API_URL } from '../../api';
 
 const HeaderSection = () => {
   // ==========================================
@@ -28,8 +29,8 @@ const HeaderSection = () => {
 
         // Use the enhanced trailer endpoint to get both data and trailer info
         const apiEndpoint = isTV 
-          ? `http://localhost:5000/api/tv/${id}/trailer`
-          : `http://localhost:5000/api/movies/${id}/trailer`;
+          ? `${API_URL}/api/tv/${id}/trailer`
+          : `${API_URL}/api/movies/${id}/trailer`;
         
         const tmdbResponse = await fetch(apiEndpoint);
         const tmdbData = await tmdbResponse.json();

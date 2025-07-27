@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
-// Use watchlist context instead of making API calls
 import { useWatchlist } from '../../contexts/WatchlistContext';
 import usePageTitle from '../../hooks/usePageTitle';
+import { API_URL } from '../../api';
 
 function Watchlist() {
   const navigate = useNavigate();
@@ -49,8 +49,8 @@ function Watchlist() {
             try {
               // Use the enhanced endpoints that include proper runtime calculation
               const endpoint = item.media_type === 'tv' || item.media_type === 'anime' 
-                ? `http://localhost:5000/api/tv/${item.media_id}/trailer`
-                : `http://localhost:5000/api/movies/${item.media_id}/trailer`;
+                ? `${API_URL}/api/tv/${item.media_id}/trailer`
+                : `${API_URL}/api/movies/${item.media_id}/trailer`;
               
               const detailResponse = await fetch(endpoint);
               const detailData = await detailResponse.json();

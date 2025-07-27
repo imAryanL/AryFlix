@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MovieTVCard from '../../components/MovieTVCard';
 import ScrollableMovieSection from '../../components/ScrollableMovieSection';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { API_URL } from '../../api';
 
 const NowPlayingTheatre = () => {
     // State to store the list of now playing movies from TMDB API
@@ -18,7 +19,7 @@ const NowPlayingTheatre = () => {
             setError(null);
             
             // Make API request to our backend endpoint for now playing movies
-            const response = await fetch('http://localhost:5000/api/movies/now-playing');
+            const response = await fetch(`${API_URL}/api/movies/now-playing`);
             
             // Check if the HTTP request was successful
             if (!response.ok) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useRating } from '../../contexts/RatingContext';
+import { API_URL } from '../../api';
 
 function Ratings() {
   const navigate = useNavigate();
@@ -53,8 +54,8 @@ function Ratings() {
             try {
               // Use the enhanced endpoints that include proper runtime calculation
               const endpoint = rating.media_type === 'tv' 
-                ? `http://localhost:5000/api/tv/${rating.media_id}/trailer`
-                : `http://localhost:5000/api/movies/${rating.media_id}/trailer`;
+                ? `${API_URL}/api/tv/${rating.media_id}/trailer`
+                : `${API_URL}/api/movies/${rating.media_id}/trailer`;
               
               const response = await fetch(endpoint);
               const data = await response.json();

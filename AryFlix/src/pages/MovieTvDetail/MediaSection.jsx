@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useWatchlist } from '../../contexts/WatchlistContext';
 import { useRating } from '../../contexts/RatingContext';
 import RatingModal from '../../components/RatingModal';
+import { API_URL } from '../../api';
 
 const TrailerSection = () => {
     const { id } = useParams();
@@ -42,8 +43,8 @@ const TrailerSection = () => {
 
                 // Use the enhanced trailer endpoint that includes YouTube fallback
                 const apiEndpoint = isTV 
-                    ? `http://localhost:5000/api/tv/${id}/trailer`
-                    : `http://localhost:5000/api/movies/${id}/trailer`;
+                    ? `${API_URL}/api/tv/${id}/trailer`
+                    : `${API_URL}/api/movies/${id}/trailer`;
                 
                 const response = await fetch(apiEndpoint);
                 const data = await response.json();

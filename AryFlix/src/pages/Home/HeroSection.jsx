@@ -1,6 +1,7 @@
 // Import React hooks for state management and side effects
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../api';
 
 // Hero Section Component
 const HeroSection = () => {
@@ -23,8 +24,8 @@ const HeroSection = () => {
       
       // Fetch trending movies and TV shows simultaneously
       const [moviesResponse, tvResponse] = await Promise.all([
-        fetch('http://localhost:5000/api/movies/trending'),
-        fetch('http://localhost:5000/api/tv/trending')
+        fetch(`${API_URL}/api/movies/trending`),
+        fetch(`${API_URL}/api/tv/trending`)
       ]);
 
       if (!moviesResponse.ok || !tvResponse.ok) {

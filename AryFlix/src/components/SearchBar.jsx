@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../api";
 
 const SearchBar = ({ isMobile = false }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -9,6 +10,7 @@ const SearchBar = ({ isMobile = false }) => {
   const navigate = useNavigate();
   const searchRef = useRef(null);
   const timeoutRef = useRef(null); // Stores the timeout ID for debouncing
+
 
   // Fetch search suggestions from API
   const fetchSuggestions = async (query) => {
@@ -21,7 +23,7 @@ const SearchBar = ({ isMobile = false }) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/search/${encodeURIComponent(query)}`);
+      const response = await fetch(`${API_URL}/api/search/${encodeURIComponent(query)}`);
       const apiResponse = await response.json();
       const data = apiResponse.data || [];
       

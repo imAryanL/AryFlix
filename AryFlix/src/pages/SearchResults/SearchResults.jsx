@@ -4,6 +4,7 @@ import MovieTVCard from '../../components/MovieTVCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import SearchBar from '../../components/SearchBar';
 import usePageTitle from '../../hooks/usePageTitle';
+import { API_URL } from '../../api';
 
 function SearchResults() {
   const { query } = useParams(); // Get search query from URL
@@ -26,7 +27,7 @@ function SearchResults() {
       console.log(`🔍 Frontend: Searching for "${searchQuery}"`);
       
       // Make API request to our backend search endpoint
-      const response = await fetch(`http://localhost:5000/api/search/${encodeURIComponent(searchQuery)}`);
+      const response = await fetch(`${API_URL}/api/search/${encodeURIComponent(searchQuery)}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

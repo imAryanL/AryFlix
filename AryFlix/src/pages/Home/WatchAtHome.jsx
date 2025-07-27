@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MovieTVCard from '../../components/MovieTVCard';
 import ScrollableMovieSection from '../../components/ScrollableMovieSection';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { API_URL } from '../../api';
 
 const PopTVShows = () => {
     const [watchAtHome, setWatchAtHome] = useState([]);
@@ -13,7 +14,7 @@ const PopTVShows = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch('http://localhost:5000/api/watch-at-home');
+            const response = await fetch(`${API_URL}/api/watch-at-home`);
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             if (!data.success) throw new Error('API returned unsuccessful response');

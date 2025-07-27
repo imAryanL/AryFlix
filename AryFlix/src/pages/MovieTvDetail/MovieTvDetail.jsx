@@ -5,6 +5,7 @@ import MediaSection from './MediaSection';
 import OverView from './OverView';
 import PeopleSection from './PeopleSection';
 import usePageTitle from '../../hooks/usePageTitle';
+import { API_URL } from '../../api';
 
 function MovieTvDetail() {
   const { id } = useParams();
@@ -24,8 +25,8 @@ function MovieTvDetail() {
       try {
         setLoading(true);
         const apiEndpoint = isTV 
-          ? `http://localhost:5000/api/tv/${id}/trailer`
-          : `http://localhost:5000/api/movies/${id}/trailer`;
+          ? `${API_URL}/api/tv/${id}/trailer`
+          : `${API_URL}/api/movies/${id}/trailer`;
         
         const response = await fetch(apiEndpoint);
         const data = await response.json();
