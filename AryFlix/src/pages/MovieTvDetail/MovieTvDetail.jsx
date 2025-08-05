@@ -47,7 +47,7 @@ function MovieTvDetail() {
   }, [id, isTV]);
 
   return (
-    <div>
+    <div className="pb-16">
       <HeaderSection />
       <MediaSection />
       <OverView />

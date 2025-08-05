@@ -185,17 +185,17 @@ const HeaderSection = () => {
   // ==========================================
   return (
     <div className="relative -mx-4 md:-mx-8">
-      <div className="text-white py-4 mt-1 md:py-8 md:mt-6"> {/* Reduced mobile padding/margin */}
+      <div className="text-white py-2 mt-1 md:py-4 md:-mt-1">
         <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-3 lg:gap-6">
             
-            {/* LEFT SIDE - Title aligned with popcorn image on large screens */}
-            <div className="lg:-ml-9">
-              <h1 className="text-2xl md:text-3xl lg:text-5xl font-normal mb-3 leading-tight">
+            {/* LEFT SIDE - Title and metadata */}
+            <div className="flex-1 max-w-4xl">
+              <h1 className="text-2xl md:text-3xl lg:text-5xl font-normal -ml-1 mb-3 leading-tight">
                 {movieData ? (movieData.title || movieData.name) : 'Loading...'}
               </h1>
               
-              <div className="flex flex-wrap items-center gap-x-2 lg:gap-x-3 gap-y-2 text-gray-300 text-xs lg:text-sm ml-1">
+              <div className="flex flex-wrap items-center gap-x-2 lg:gap-x-3 gap-y-2 text-gray-300 text-xs lg:text-sm">
                 <span className="text-gray-300">{movieData?.name ? 'TV Series' : 'Movie'}</span>
                 <span className="text-gray-300">•</span>
                 <span>{getYearDisplay()}</span>
@@ -210,53 +210,55 @@ const HeaderSection = () => {
 
             {/* RIGHT SIDE - Rating Sources (IMDb, Rotten Tomatoes, TMDB) */}
             {(ratings || movieData) && (
-              <div className="flex overflow-x-auto lg:flex-wrap lg:flex-nowrap items-start gap-3 lg:gap-6 lg:-mr-9 lg:mt-3 pb-2 lg:pb-0">
-                
-                {/* 1. IMDb Rating */}
-                {ratings?.imdb && (
-                  <div className="text-center min-w-[60px] lg:min-w-[80px] flex-shrink-0">
-                    <div className="text-xs text-gray-300 font-bold tracking-wide">IMDb RATING</div>
-                    <div className="flex items-center justify-center mt-1">
-                      <img 
-                        src="/imdb.png" 
-                        alt="IMDb" 
-                        className="w-4 h-4 lg:w-7 lg:h-7 mr-1"
-                      />
-                      <span className="text-sm lg:text-lg font-bold">{ratings.imdb}</span>
+              <div className="flex-shrink-0 w-48 lg:w-74 xl:w-74">
+                <div className="flex flex-nowrap items-start gap-3 lg:gap-6 w-full justify-start lg:justify-end">
+                  
+                  {/* 1. IMDb Rating */}
+                  {ratings?.imdb && (
+                    <div className="text-center flex-shrink-0">
+                      <div className="text-xs text-gray-300 font-bold tracking-wide whitespace-nowrap">IMDb RATING</div>
+                      <div className="flex items-center justify-center mt-1">
+                        <img 
+                          src="/imdb.png" 
+                          alt="IMDb" 
+                          className="w-5 h-5 lg:w-7 lg:h-7 mr-1"
+                        />
+                        <span className="text-sm lg:text-base font-bold">{ratings.imdb}</span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* 2. Rotten Tomatoes Rating */}
-                {ratings?.rottenTomatoes && (
-                  <div className="text-center min-w-[60px] lg:min-w-[80px] flex-shrink-0">
-                    <div className="text-xs text-gray-300 tracking-wide font-bold">RT RATING</div>
-                    <div className="flex items-center justify-center mt-1">
-                      <img 
-                        src="/rottentomato.png" 
-                        alt="Rotten Tomatoes" 
-                        className="w-4 h-4 lg:w-7 lg:h-7 mr-1"
-                      />
-                      <span className="text-sm lg:text-lg font-bold">{ratings.rottenTomatoes}</span>
-                      <span className="text-white">%</span>
+                  {/* 2. Rotten Tomatoes Rating */}
+                  {ratings?.rottenTomatoes && (
+                    <div className="text-center flex-shrink-0">
+                      <div className="text-xs text-gray-300 tracking-wide font-bold whitespace-nowrap">RT RATING</div>
+                      <div className="flex items-center justify-center mt-1">
+                        <img 
+                          src="/rottentomato.png" 
+                          alt="Rotten Tomatoes" 
+                          className="w-5 h-5 lg:w-7 lg:h-7 mr-1"
+                        />
+                        <span className="text-sm lg:text-base font-bold">{ratings.rottenTomatoes}</span>
+                        <span className="text-white">%</span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {/* 3. TMDB Rating */}
-                {movieData?.vote_average && (
-                  <div className="text-center min-w-[60px] lg:min-w-[80px] flex-shrink-0">
-                    <div className="text-xs text-gray-300 font-bold tracking-wide">TMDB RATING</div>
-                    <div className="flex items-center justify-center mt-1">
-                      <img 
-                        src="/tmdb.png" 
-                        alt="TMDB" 
-                        className="w-5 h-5 lg:w-8 lg:h-8 mr-1"
-                      />
-                      <span className="text-sm lg:text-lg font-bold">{movieData.vote_average.toFixed(1)}</span>
+                  {/* 3. TMDB Rating */}
+                  {movieData?.vote_average && (
+                    <div className="text-center flex-shrink-0">
+                      <div className="text-xs text-gray-300 font-bold tracking-wide whitespace-nowrap">TMDB RATING</div>
+                      <div className="flex items-center justify-center mt-1">
+                        <img 
+                          src="/tmdb.png" 
+                          alt="TMDB" 
+                          className="w-5 h-5 lg:w-7 lg:h-7 mr-1"
+                        />
+                        <span className="text-sm lg:text-base font-bold">{movieData.vote_average.toFixed(1)}</span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             )}
           </div>

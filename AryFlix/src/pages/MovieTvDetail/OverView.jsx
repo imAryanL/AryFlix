@@ -153,35 +153,45 @@ const OverView = () => {
                             </div>
                         </div>
                     )}
-                </div>
-
-                {/* DESKTOP LAYOUT (keep existing) */}
-                <div className="hidden lg:block">
-                    {/* GENRES & KEYWORDS SECTION */}
-                    <div className="lg:-ml-9">
-                        <div className="flex flex-wrap gap-2 mb-4">
-                            {genresAndKeywords.map((item, index) => (
-                                <span
-                                    key={index}
-                                    className="bg-[#393841] hover:bg-[#4a4a52] text-white px-3 py-1 rounded-full border border-gray-200 text-sm font-medium cursor-pointer"
-                                >
-                                    {item.name}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* DESCRIPTION/OVERVIEW SECTION */}
+                    {/* Overview */}
                     {formattedDescription && (
-                        <div className="lg:-ml-8">
-                            <div className="mb-2 max-w-4xl">
-                                <p className="text-gray-200 leading-relaxed text-base">
-                                    {formattedDescription}
-                                </p>
-                            </div>
-                            <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
+                        <div className="mb-2">
+                            <p className="text-gray-200 leading-relaxed text-base">
+                                {formattedDescription}
+                            </p>
+                            <div className="border-t border-gray-600 my-3"></div>
                         </div>
                     )}
+                </div>
+
+                {/* DESKTOP/IPAD HORIZONTAL LAYOUT */}
+                <div className="hidden lg:block">
+                    <div className="flex flex-col max-w-4xl">
+                        {/* GENRES & KEYWORDS SECTION */}
+                        {genresAndKeywords.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                {genresAndKeywords.map((item, index) => (
+                                    <span
+                                        key={index}
+                                        className="bg-[#393841] hover:bg-[#4a4a52] text-white px-3 py-1 rounded-full border border-gray-200 text-sm font-medium cursor-pointer"
+                                    >
+                                        {item.name}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                        {/* DESCRIPTION/OVERVIEW SECTION */}
+                        {formattedDescription && (
+                            <>
+                                <div className="mb-2">
+                                    <p className="text-gray-200 leading-relaxed text-base">
+                                        {formattedDescription}
+                                    </p>
+                                </div>
+                                <div className="border-t border-gray-600 mb-3"></div>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

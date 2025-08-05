@@ -42,8 +42,8 @@ function App() {
               </Routes>
             </div>
           ) : (
-            // Other pages: Use original container
-            <div className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full pt-20 mt-0">
+            // Other pages: Use navbar-aligned container
+            <div className="flex-1 max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-20 mt-0">
               <Routes>
                 <Route path="/movie/:id" element={<MovieTvDetail />} />
                 <Route path="/tv/:id" element={<MovieTvDetail />} />

@@ -212,97 +212,129 @@ const PeopleSection = () => {
     return (
         <div className="relative -mx-4 md:-mx-8">
             <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="lg:-ml-8">
-                    {/* Desktop Layout - Increased gap to push streaming box further right */}
-                    <div className="hidden lg:flex lg:items-start lg:gap-27">
-                        {/* LEFT SIDE - People Info */}
-                        <div className="max-w-4xl flex-1">
-                            
-                            {/* CREATORS/DIRECTORS SECTION - Show first */}
-                            {creatorsOrDirectors && (
-                                <>
-                                    <div className="text-white text-base leading-relaxed mb-3">
-                                        <span className="text-white font-bold">{creatorsOrDirectors.label}:</span>{' '}
-                                        <span className="text-white font-normal text-base">{creatorsOrDirectors.names}</span>
-                                    </div>
-                                    <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
-                                </>
-                            )}
-
-                            {/* CAST SECTION - Show second (if available) */}
-                            {topCast && topCast.length > 0 && (
-                                <>
-                                    <div className="text-white text-base leading-relaxed mb-3">
-                                        <span className="text-white font-bold">Cast:</span>{' '}
-                                        {topCast.map((person, index) => (
-                                            <span key={person.id}>
-                                                <span className="text-white font-normal text-base">{person.name}</span>
-                                                <span className="text-gray-400 text-base"> ({person.character?.split('(')[0].trim() || 'Unknown Character'})</span>
-                                                {index < topCast.length - 1 && <span className="text-white"> • </span>}
-                                            </span>
-                                        ))}
-                                    </div>
-                                    <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
-                                </>
-                            )}
-                            
-                            {/* PRODUCTION INFO SECTION - Show third */}
-                            {productionInfo && (
+                {/* Desktop Layout - StreamingProviders on the right */}
+                <div className="hidden xl:flex xl:items-start xl:gap-17">
+                    {/* LEFT SIDE - People Info */}
+                    <div className="max-w-4xl flex-1">
+                        {/* CREATORS/DIRECTORS SECTION */}
+                        {creatorsOrDirectors && (
+                            <>
                                 <div className="text-white text-base leading-relaxed mb-3">
-                                    <span className="text-white font-bold">{productionInfo.label}:</span>{' '}
-                                    <span className="text-white font-normal text-base">{productionInfo.name}</span>
-                                </div>
-                            )}
-
-                        </div>
-
-                        {/* RIGHT SIDE - Streaming Providers (Moved further right) */}
-                        <div className="flex-shrink-0 w-59">
-                            <StreamingProviders movieData={movieData} isTV={isTV} />
-                        </div>
-                    </div>
-
-                    {/* Mobile/Tablet Layout - Stacked, more compact */}
-                    <div className="lg:hidden">
-                        {/* People Info */}
-                        <div className="max-w-4xl">
-                            
-                            {/* CREATORS/DIRECTORS SECTION - Smaller text for mobile */}
-                            {creatorsOrDirectors && (
-                                <div className="text-white text-sm leading-relaxed mb-3"> {/* Changed from text-base to text-sm */}
                                     <span className="text-white font-bold">{creatorsOrDirectors.label}:</span>{' '}
-                                    <span className="text-white font-normal text-sm">{creatorsOrDirectors.names}</span> {/* Changed from text-base to text-sm */}
+                                    <span className="text-white font-normal text-base">{creatorsOrDirectors.names}</span>
                                 </div>
-                            )}
-
-                            {/* CAST SECTION - Smaller text for mobile */}
-                            {topCast && topCast.length > 0 && (
-                                <div className="text-white text-sm leading-relaxed mb-3"> {/* Changed from text-base to text-sm */}
+                                <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
+                            </>
+                        )}
+                        {/* CAST SECTION */}
+                        {topCast && topCast.length > 0 && (
+                            <>
+                                <div className="text-white text-base leading-relaxed mb-3">
                                     <span className="text-white font-bold">Cast:</span>{' '}
                                     {topCast.map((person, index) => (
                                         <span key={person.id}>
-                                            <span className="text-white font-normal text-sm">{person.name}</span> {/* Changed from text-base to text-sm */}
-                                            <span className="text-gray-400 text-sm"> ({person.character?.split('(')[0].trim() || 'Unknown Character'})</span> {/* Changed from text-base to text-sm */}
+                                            <span className="text-white font-normal text-base">{person.name}</span>
+                                            <span className="text-gray-400 text-base"> ({person.character?.split('(')[0].trim() || 'Unknown Character'})</span>
                                             {index < topCast.length - 1 && <span className="text-white"> • </span>}
                                         </span>
                                     ))}
                                 </div>
-                            )}
-                            
-                            {/* PRODUCTION INFO SECTION - Smaller text for mobile */}
-                            {productionInfo && (
-                                <div className="text-white text-sm leading-relaxed mb-3"> {/* Changed from text-base to text-sm */}
-                                    <span className="text-white font-bold">{productionInfo.label}:</span>{' '}
-                                    <span className="text-white font-normal text-sm">{productionInfo.name}</span> {/* Changed from text-base to text-sm */}
+                                <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
+                            </>
+                        )}
+                        {/* PRODUCTION INFO SECTION */}
+                        {productionInfo && (
+                            <div className="text-white text-base leading-relaxed mb-3">
+                                <span className="text-white font-bold">{productionInfo.label}:</span>{' '}
+                                <span className="text-white font-normal text-base">{productionInfo.name}</span>
+                            </div>
+                        )}
+                    </div>
+                    {/* RIGHT SIDE - Streaming Providers (Desktop only) */}
+                    <div className="flex-shrink-0 w-59">
+                        <StreamingProviders movieData={movieData} isTV={isTV} />
+                    </div>
+                </div>
+
+                {/* iPad Horizontal Layout - StreamingProviders underneath */}
+                <div className="hidden lg:block xl:hidden">
+                    {/* PEOPLE INFO SECTION */}
+                    <div className="max-w-4xl">
+                        {/* CREATORS/DIRECTORS SECTION */}
+                        {creatorsOrDirectors && (
+                            <>
+                                <div className="text-white text-base leading-relaxed mb-3">
+                                    <span className="text-white font-bold">{creatorsOrDirectors.label}:</span>{' '}
+                                    <span className="text-white font-normal text-base">{creatorsOrDirectors.names}</span>
                                 </div>
-                            )}
+                                <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
+                            </>
+                        )}
+                        {/* CAST SECTION */}
+                        {topCast && topCast.length > 0 && (
+                            <>
+                                <div className="text-white text-base leading-relaxed mb-3">
+                                    <span className="text-white font-bold">Cast:</span>{' '}
+                                    {topCast.map((person, index) => (
+                                        <span key={person.id}>
+                                            <span className="text-white font-normal text-base">{person.name}</span>
+                                            <span className="text-gray-400 text-base"> ({person.character?.split('(')[0].trim() || 'Unknown Character'})</span>
+                                            {index < topCast.length - 1 && <span className="text-white"> • </span>}
+                                        </span>
+                                    ))}
+                                </div>
+                                <div className="border-t border-gray-600 max-w-4xl mb-3"></div>
+                            </>
+                        )}
+                        {/* PRODUCTION INFO SECTION */}
+                        {productionInfo && (
+                            <div className="text-white text-base leading-relaxed mb-3">
+                                <span className="text-white font-bold">{productionInfo.label}:</span>{' '}
+                                <span className="text-white font-normal text-base">{productionInfo.name}</span>
+                            </div>
+                        )}
+                    </div>
+                    
+                    {/* STREAMING PROVIDERS SECTION - Underneath people content for iPad horizontal */}
+                    <div className="mt-32">
+                        <StreamingProviders movieData={movieData} isTV={isTV} />
+                    </div>
+                </div>
 
-                        </div>
-
-                        {/* Streaming Providers (Mobile/Tablet) - MORE spacing */}
-                        <div className="mt-10">
-                            <StreamingProviders movieData={movieData} isTV={isTV} />
-                        </div>
+                {/* Mobile/Tablet Layout */}
+                <div className="lg:hidden">
+                    <div className="max-w-4xl">
+                        {/* CREATORS/DIRECTORS SECTION */}
+                        {creatorsOrDirectors && (
+                            <div className="text-white text-sm leading-relaxed mb-3">
+                                <span className="text-white font-bold">{creatorsOrDirectors.label}:</span>{' '}
+                                <span className="text-white font-normal text-sm">{creatorsOrDirectors.names}</span>
+                            </div>
+                        )}
+                        {/* CAST SECTION */}
+                        {topCast && topCast.length > 0 && (
+                            <div className="text-white text-sm leading-relaxed mb-3">
+                                <span className="text-white font-bold">Cast:</span>{' '}
+                                {topCast.map((person, index) => (
+                                    <span key={person.id}>
+                                        <span className="text-white font-normal text-sm">{person.name}</span>
+                                        <span className="text-gray-400 text-sm"> ({person.character?.split('(')[0].trim() || 'Unknown Character'})</span>
+                                        {index < topCast.length - 1 && <span className="text-white"> • </span>}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                        {/* PRODUCTION INFO SECTION */}
+                        {productionInfo && (
+                            <div className="text-white text-sm leading-relaxed mb-3">
+                                <span className="text-white font-bold">{productionInfo.label}:</span>{' '}
+                                <span className="text-white font-normal text-sm">{productionInfo.name}</span>
+                            </div>
+                        )}
+                    </div>
+                    {/* Streaming Providers (Mobile/Tablet) */}
+                    <div className="mt-15">
+                        <StreamingProviders movieData={movieData} isTV={isTV} />
                     </div>
                 </div>
             </div>

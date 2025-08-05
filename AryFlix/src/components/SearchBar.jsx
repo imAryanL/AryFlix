@@ -106,7 +106,7 @@ const SearchBar = ({ isMobile = false }) => {
       <form onSubmit={handleSearch} className="w-full relative">
         <input
           type="text"
-          placeholder={isMobile ? "Search..." : "Search movies and TV shows..."}
+          placeholder=""
           value={searchQuery}
           onChange={handleInputChange}
           onKeyDown={(e) => {
@@ -116,7 +116,7 @@ const SearchBar = ({ isMobile = false }) => {
               clearTimeout(timeoutRef.current);
             }
           }}
-          className="w-full bg-[#303035] text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#F06292] placeholder-gray-400 text-sm placeholder:text-sm"
+          className="w-full bg-[#303035] text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-[#F06292] placeholder-gray-400 text-sm placeholder:text-sm md:placeholder:text-sm"
         />
         <button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2">
           <img src="/searchbar_icon.png" alt="Search" className="h-6 w-6 cursor-pointer"/>

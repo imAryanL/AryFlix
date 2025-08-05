@@ -52,10 +52,38 @@ function SearchResults() {
 
   // Fetch results when component mounts or query changes
   useEffect(() => {
-    if (query) {
+    if (query && query !== 'browse') {
       fetchSearchResults(query);
+    } else {
+      setLoading(false);
+      setSearchResults([]);
     }
   }, [query]);
+
+  // Handle browse case
+  if (query === 'browse') {
+    return (
+      <div className="min-h-screen bg-black text-white pt-10">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-4">Browse Movies & TV Shows</h1>
+            <div className="md:hidden mb-6">
+              <SearchBar isMobile={true} />
+            </div>
+          </div>
+          <div className="text-center">
+            <p className="text-gray-400 mb-4">Use the search bar to find specific movies and TV shows.</p>
+            <button 
+              onClick={() => navigate('/')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              Go Back Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Loading state
   if (loading) {

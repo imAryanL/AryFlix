@@ -345,71 +345,143 @@ const TrailerSection = () => {
     // ==========================================
     return (
         <div className="relative -mx-4 md:-mx-8">
-            <div className="-mt-4 pb-8">
+            <div className="pb-8 mt-2">
                 <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
                     
                     {/* MOBILE LAYOUT */}
                     <div className="block lg:hidden">
-                        {/* 3. VIDEO SECTION (full-width, edge-to-edge) */}
-                        {enhancedTrailer ? (
-                            <div className="mb-4 -mx-4">
-                                <div className="relative w-full aspect-video bg-black overflow-hidden shadow-lg">
-                                    <iframe
-                                        src={getYouTubeEmbedUrl(enhancedTrailer)}
-                                        title={trailerSourceInfo?.name || 'Trailer'}
-                                        className="w-full h-full"
-                                        frameBorder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        onError={() => {
-                                            console.log('🚫 Trailer failed to load - possibly geo-blocked');
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        ) : (
-                            /* No Trailer Available - Mobile version, also full-width */
-                            <div className="mb-4 -mx-4">
-                                <div className="w-full aspect-video flex items-center justify-center bg-gray-800">
-                                    <div className="text-center p-6">
-                                        <h3 className="text-white text-lg font-bold mb-2">No Trailer Available</h3>
-                                        <p className="text-gray-400 text-sm">
-                                            No trailer found for this {isTV ? 'TV show' : 'movie'}
-                                        </p>
+                        {/* PHONE VERTICAL LAYOUT */}
+                        <div className="md:hidden">
+                            {/* 3. VIDEO SECTION (full-width, edge-to-edge) */}
+                            {enhancedTrailer ? (
+                                <div className="mb-4 -mx-4">
+                                    <div className="relative w-full aspect-video bg-black overflow-hidden shadow-lg">
+                                        <iframe
+                                            src={getYouTubeEmbedUrl(enhancedTrailer)}
+                                            title={trailerSourceInfo?.name || 'Trailer'}
+                                            className="w-full h-full"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            onError={() => {
+                                                console.log('🚫 Trailer failed to load - possibly geo-blocked');
+                                            }}
+                                        />
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            ) : (
+                                /* No Trailer Available - Mobile version, also full-width */
+                                <div className="mb-4 -mx-4">
+                                    <div className="w-full aspect-video flex items-center justify-center bg-gray-800">
+                                        <div className="text-center p-6">
+                                            <h3 className="text-white text-lg font-bold mb-2">No Trailer Available</h3>
+                                            <p className="text-gray-400 text-sm">
+                                                No trailer found for this {isTV ? 'TV show' : 'movie'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
-                        {/* 4. POSTER (left) + SUMMARY (right) */}
-                        <div className="flex gap-3 mb-4">
-                            {/* Poster - Small and compact */}
-                            <div className="flex-shrink-0">
-                                <img 
-                                    src={getPosterUrl()}
-                                    alt={`${getTitle()} poster`}
-                                    className="w-24 h-36 rounded-lg object-cover shadow-lg"
-                                />
+                            {/* 4. POSTER (left) + SUMMARY (right) */}
+                            <div className="flex gap-3 mb-4">
+                                {/* Poster - Small and compact */}
+                                <div className="flex-shrink-0">
+                                    <img 
+                                        src={getPosterUrl()}
+                                        alt={`${getTitle()} poster`}
+                                        className="w-24 h-36 rounded-lg object-cover shadow-lg"
+                                    />
+                                </div>
+                                
+                                {/* Summary - Takes remaining space */}
+                                <div className="flex-1 min-w-0">
+                                    {movieData?.overview ? (
+                                        <p className="text-gray-200 text-sm leading-relaxed">
+                                            {movieData.overview.length <= 250 
+                                                ? movieData.overview 
+                                                : (() => {
+                                                    const shortened = movieData.overview.substring(0, 250);
+                                                    const lastPeriod = shortened.lastIndexOf('.');
+                                                    const lastSpace = shortened.lastIndexOf(' ');
+                                                    
+                                                    if (lastPeriod > 150) {
+                                                        return movieData.overview.substring(0, lastPeriod + 1);
+                                                    }
+                                                    if (lastSpace > 150) {
+                                                        return movieData.overview.substring(0, lastSpace) + '...';
+                                                    }
+                                                    return movieData.overview.substring(0, 200) + '...';
+                                                })()
+                                            }
+                                        </p>
+                                    ) : (
+                                        <p className="text-gray-400 text-sm italic">No summary available</p>
+                                    )}
+                                </div>
                             </div>
-                            
-                            {/* Summary - Takes remaining space, with same limiting as OverView */}
-                            <div className="flex-1 min-w-0">
+                        </div>
+
+                        {/* TABLET/HORIZONTAL PHONE LAYOUT */}
+                        <div className="hidden md:block">
+                            {/* POSTER AND VIDEO ROW */}
+                            <div className="flex gap-4 mb-4">
+                                {/* Poster - Wider size for better balance */}
+                                <div className="flex-shrink-0">
+                                    <img 
+                                        src={getPosterUrl()}
+                                        alt={`${getTitle()} poster`}
+                                        className="w-40 h-60 rounded-lg object-cover shadow-lg"
+                                    />
+                                </div>
+                                
+                                {/* Video - Takes remaining space without max-width constraint */}
+                                <div className="flex-1">
+                                    {enhancedTrailer ? (
+                                        <div className="w-full h-60 bg-black rounded-lg overflow-hidden shadow-lg">
+                                            <iframe
+                                                src={getYouTubeEmbedUrl(enhancedTrailer)}
+                                                title={trailerSourceInfo?.name || 'Trailer'}
+                                                className="w-full h-full"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                                onError={() => {
+                                                    console.log('🚫 Trailer failed to load - possibly geo-blocked');
+                                                }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="w-full h-60 flex items-center justify-center bg-gray-800 rounded-lg">
+                                            <div className="text-center p-4">
+                                                <h3 className="text-white text-sm font-bold mb-1">No Trailer</h3>
+                                                <p className="text-gray-400 text-xs">
+                                                    No trailer available
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* SUMMARY - Below the poster/video row */}
+                            <div className="mb-4">
                                 {movieData?.overview ? (
                                     <p className="text-gray-200 text-sm leading-relaxed">
-                                        {movieData.overview.length <= 250 
+                                        {movieData.overview.length <= 300 
                                             ? movieData.overview 
                                             : (() => {
-                                                const shortened = movieData.overview.substring(0, 250);
+                                                const shortened = movieData.overview.substring(0, 300);
                                                 const lastPeriod = shortened.lastIndexOf('.');
                                                 const lastSpace = shortened.lastIndexOf(' ');
                                                 
-                                                if (lastPeriod > 150) {
+                                                if (lastPeriod > 200) {
                                                     return movieData.overview.substring(0, lastPeriod + 1);
                                                 }
-                                                if (lastSpace > 150) {
+                                                if (lastSpace > 200) {
                                                     return movieData.overview.substring(0, lastSpace) + '...';
                                                 }
-                                                return movieData.overview.substring(0, 200) + '...';
+                                                return movieData.overview.substring(0, 250) + '...';
                                             })()
                                         }
                                     </p>
@@ -510,6 +582,19 @@ const TrailerSection = () => {
                                     )
                                 )}
 
+                                {/* Seasons (TV) - ADD THIS SECTION */}
+                                {isTV && (
+                                    <div className="bg-[#393841] rounded-lg py-2 px-3 text-center">
+                                        <div className="text-xs text-white font-bold tracking-wide mb-1">Seasons</div>
+                                        <div className="text-[#ff75a3] font-medium text-xs">
+                                            {movieData?.number_of_seasons 
+                                                ? `${movieData.number_of_seasons} ${movieData.number_of_seasons === 1 ? 'season' : 'seasons'}`
+                                                : 'TBD'
+                                            }
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Box Office (Movies only) */}
                                 {!isTV && (
                                     <div className="bg-[#393841] rounded-lg py-2 px-3 text-center">
@@ -540,7 +625,7 @@ const TrailerSection = () => {
                     {/* DESKTOP LAYOUT (keep existing) */}
                     <div className="hidden lg:block">
                         {/* LEFT SIDE - POSTER AND VIDEO TOGETHER */}
-                        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-1 lg:-ml-9">
+                        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-1 lg:justify-start">
                             
                             {/* POSTER */}
                             <div className="flex justify-center lg:justify-start mb-8 lg:mb-0 flex-shrink-0">
@@ -548,7 +633,7 @@ const TrailerSection = () => {
                                     <img 
                                         src={getPosterUrl()}
                                         alt={`${getTitle()} poster`}
-                                        className="w-70 h-auto rounded-lg shadow-2xl transform transition-transform duration-100 ease-out group-hover:scale-[1.02]"
+                                        className="w-56 lg:w-64 xl:w-70 h-auto lg:h-[420px] rounded-lg shadow-2xl transform transition-transform duration-100 ease-out group-hover:scale-[1.02]"
                                         loading="lazy"
                                     />
                                     
@@ -558,12 +643,12 @@ const TrailerSection = () => {
                             </div>
 
                             {/* VIDEO - ENHANCED WITH YOUTUBE FALLBACK */}
-                            <div className="flex-shrink-0">
+                            <div className="flex-shrink-0 flex-1 max-w-3xl lg:max-w-4xl xl:max-w-5xl">
                                 {enhancedTrailer ? (
-                                    <div className="w-full mr-2">
-                                        {/* Video container with proper 16:9 aspect ratio */}
+                                    <div className="w-full">
+                                        {/* Video container with height matching poster */}
                                         <div 
-                                            className="relative w-[746px] aspect-video bg-black rounded-lg overflow-hidden shadow-2xl select-none"
+                                            className="relative w-full h-[336px] lg:h-[420px] xl:h-[420px] bg-black rounded-lg overflow-hidden shadow-2xl select-none"
                                             onMouseDown={(e) => e.preventDefault()}
                                         >
                                             <iframe
@@ -584,10 +669,10 @@ const TrailerSection = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    /* No Trailer Available - Enhanced message */
-                                    <div className="w-[745px] aspect-video flex items-center justify-center">
-                                        <div className="bg-gray-800 rounded-lg p-8 text-center">
-                                            <h3 className="text-white text-xl font-bold mb-4">No Trailer Available</h3>
+                                    /* No Trailer Available - Matching height */
+                                    <div className="w-full h-[336px] lg:h-[384px] xl:h-[420px] flex items-center justify-center">
+                                        <div className="bg-gray-800 rounded-lg p-6 lg:p-8 text-center">
+                                            <h3 className="text-white text-lg lg:text-xl font-bold mb-4">No Trailer Available</h3>
                                             <p className="text-gray-400 mb-2">
                                                 No trailer found on TMDB or YouTube for this {isTV ? 'TV show' : 'movie'}
                                             </p>
@@ -600,8 +685,8 @@ const TrailerSection = () => {
                             </div>
 
                             {/* RIGHT SIDEBAR - WATCHLIST AND RATE SECTION */}
-                            <div className="flex-shrink-0 w-64 -ml-2">
-                                <div className="h-[420px] flex flex-col justify-between">
+                            <div className="flex-shrink-0 w-48 lg:w-56 xl:w-64">
+                                <div className="h-auto lg:h-[420px] flex flex-col justify-start lg:justify-between space-y-4 lg:space-y-0">
                                     {/* Watchlist Button - Enhanced with actual functionality */}
                                     <button 
                                         onClick={handleWatchlistToggle}
