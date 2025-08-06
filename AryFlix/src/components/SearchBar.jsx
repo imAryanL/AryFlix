@@ -140,7 +140,7 @@ const SearchBar = ({ isMobile = false }) => {
                 >
                   {/* Poster thumbnail */}
                   <img
-                    src={item.poster_path || '/placeholder-poster.jpg'}
+                    src={item.poster_path || '/movie_placeholder.png'}
                     alt={item.title || item.name}
                     className="w-12 h-16 object-cover rounded mr-3 flex-shrink-0"
                     onError={(e) => { e.target.src = '/movie_placeholder.png'; }}

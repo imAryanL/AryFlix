@@ -104,7 +104,7 @@ const UpcomingShows = () => {
                 // Build full poster URL from TMDB image path
                 const posterUrl = show.poster_path 
                     ? `https://image.tmdb.org/t/p/w780${show.poster_path}`
-                    : '/placeholder-poster.jpg'; // Fallback if no poster
+                    : '/movie_placeholder.png'; // Fallback if no poster
 
                 return (
                     <MovieTVCard

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import StreamingProviders from './StreamingProviders';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import { API_URL } from '../../api';
 
 const PeopleSection = () => {
@@ -188,7 +189,7 @@ const PeopleSection = () => {
             <div className="relative -mx-4 md:-mx-8">
                 <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-center">
-                        <div className="text-white text-lg">Loading cast...</div>
+                        <LoadingSpinner />
                     </div>
                 </div>
             </div>

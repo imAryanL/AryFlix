@@ -139,7 +139,7 @@ const TrailerSection = () => {
         }
         
         // Fallback to API poster
-        if (!movieData?.poster_path) return '/placeholder-poster.jpg';
+        if (!movieData?.poster_path) return '/movie_placeholder.png';
         return `https://image.tmdb.org/t/p/w780${movieData.poster_path}`;
     };
 
@@ -319,7 +319,7 @@ const TrailerSection = () => {
             <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex justify-center">
                     <div className="animate-pulse">
-                        <div className="bg-gray-700 rounded-lg h-96 w-64"></div>
+                        <div className="bg-[#E91E63] rounded-lg h-96 w-64"></div>
                     </div>
                 </div>
             </div>

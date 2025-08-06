@@ -216,7 +216,7 @@ const StreamingPlatforms = () => {
                     // Build poster URL
                     const posterUrl = item.poster_path 
                         ? `https://image.tmdb.org/t/p/w780${item.poster_path}`
-                        : '/placeholder-poster.jpg';
+                        : '/movie_placeholder.png';
 
                     return (
                         <MovieTVCard

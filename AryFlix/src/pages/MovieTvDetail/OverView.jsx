@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import { API_URL } from '../../api';
 
 const OverView = () => {
@@ -103,7 +104,7 @@ const OverView = () => {
             <div className="relative -mx-4 md:-mx-8">
                 <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
                     <div className="flex items-center justify-center h-20">
-                        <div className="text-white text-lg">Loading...</div>
+                        <LoadingSpinner />
                     </div>
                 </div>
             </div>

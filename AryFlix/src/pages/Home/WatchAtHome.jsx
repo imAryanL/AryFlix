@@ -78,7 +78,7 @@ const PopTVShows = () => {
                     title={item.title || item.name}
                     year={item.release_date ? new Date(item.release_date).getFullYear() : (item.first_air_date ? new Date(item.first_air_date).getFullYear() : '')}
                     rating={item.vote_average?.toFixed(1) || 'N/A'}
-                    posterUrl={item.poster_path ? `https://image.tmdb.org/t/p/w780${item.poster_path}` : '/placeholder-poster.jpg'}
+                    posterUrl={item.poster_path ? `https://image.tmdb.org/t/p/w780${item.poster_path}` : '/movie_placeholder.png'}
                     showGetTickets={false}
                     mediaType={item.media_type}
                 />

@@ -288,7 +288,7 @@ function Filter() {
                   const year = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
                   const posterUrl = item.poster_path 
                     ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                    : '/placeholder-poster.jpg';
+                    : '/movie_placeholder.png';
 
                   return (
                     <MovieTVCard
