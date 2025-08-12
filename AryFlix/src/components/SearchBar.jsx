@@ -106,7 +106,7 @@ const SearchBar = ({ isMobile = false }) => {
       <form onSubmit={handleSearch} className="w-full relative">
         <input
           type="text"
-          placeholder=""
+          placeholder="Search for a movie or TV show"
           value={searchQuery}
           onChange={handleInputChange}
           onKeyDown={(e) => {
