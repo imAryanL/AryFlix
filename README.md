@@ -63,6 +63,21 @@ AryFlix is a modern, full-featured movie and TV show discovery web app inspired 
 
 ---
 
+
+## Demo
+
+### 🎬 Homepage & Detail Navigation / Creating account
+![2025-08-1201-33-43-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/092860c3-e4a8-464c-a193-928868f15d70)
+
+### 🔍 Search & Advanced Filtering
+![ezgif com-video-to-gif-converter (5)](https://github.com/user-attachments/assets/1ced17ae-a596-4a7f-acae-29ab076f2d72)
+
+## ⭐ Watchlist and Ratings features
+![ezgif com-video-to-gif-converter (4)](https://github.com/user-attachments/assets/3f8d8a7a-762c-4f55-b527-871aed0e9222)
+
+
+---
+
 ## 🚀 Tech Stack
 
 ### 🖥️ Frontend
@@ -87,12 +102,6 @@ AryFlix is a modern, full-featured movie and TV show discovery web app inspired 
 - **Frontend**: [Vercel](https://vercel.com)
 - **Backend**: [Render](https://render.com)
 - **Keepalive**: [UptimeRobot](https://uptimerobot.com) for backend uptime
-
----
-
-## 📸 Screenshots
-
-> _Coming soon — project UI images will be added here_
 
 ---
 
